@@ -63,19 +63,14 @@ The user tells you during the interview: "I have a diagram for X" or "I need a t
 
 ## MODE 1: GENERATE (`@doc-report`)
 
-Full interactive flow. Ask step by step:
+Interactive flow — 6 steps. Ask ONE question at a time:
 
-1. **Language** — "Report language? 1) English 2) Chinese 3) Bilingual"
-2. **Template** — List `.agents/skills/doc-report/templates/` folders. If none, use built-in academic template.
-3. **Subject** — "What subject? (e.g., Computer Science, Chemistry, Physics…)"
-4. **Title** — "Report title?"
-5. **Authors** — "Author(s)?"
-6. **Type** — "Individual or group?"
-7. **Sections** — Based on subject, suggest sections (Abstract, Introduction, Methodology, Results, Discussion, Conclusion, References). User can add/remove.
-8. **Content Q&A** — For each section, ask 1–2 short questions to collect content. Do NOT generate content from scratch — use what the user provides.
-9. **Figures & Tables** — "Any figures or tables? List them and I'll add placeholders." Insert auto-numbered placeholders.
-10. **Preview** — Show the assembled report structure (headings + first 2 lines per section).
-11. **Generate** — Write to `/docs/doc-report/REPORT_{subject}_{date}.md`. Update `/docs/doc-report/.config.md` with session metadata.
+1. **Basics** — "Language? 1) English 2) Chinese 3) Bilingual" → "Report title?" → "Subject? (CS, Chemistry, Physics…)"
+2. **Authors** — "Individual or group? If group, member names?"
+3. **Sections** — Suggest sections based on subject. User confirms or edits.
+4. **Content** — For each section, ask 1 question to collect what the user wants to say. Do NOT generate — use their words.
+5. **Figures & Tables** — "Any figures or tables? Name and section. I'll add auto-numbered placeholders."
+6. **Preview & Generate** — Show heading outline + first sentence per section. Confirm → write to `/docs/doc-report/REPORT_{subject}_{date}.md`.
 
 ## MODE 2: LIST TEMPLATES (`@doc-report --templates`)
 
@@ -89,6 +84,71 @@ Read `/docs/doc-report/.config.md` and display a table of past reports:
 ## MODE 4: CONFIG (`@doc-report --config`)
 
 Display current settings from `/docs/doc-report/.config.md`. Allow editing defaults (language, preferred sections).
+
+---
+
+# USAGE EXAMPLE
+
+**User:** `@doc-report`
+
+**Agent:** Report language? 1) English 2) Chinese 3) Bilingual
+
+**User:** 1
+
+**Agent:** Report title?
+
+**User:** Process Scheduling Algorithm Comparison
+
+**Agent:** Subject?
+
+**User:** Operating Systems
+
+**Agent:** Individual or group?
+
+**User:** Group — Zhang Wei, Li Ming, Wang Fang
+
+**Agent:** Suggested sections: Abstract, Introduction, Methodology, Results, Discussion, Conclusion, References. Add or remove any?
+
+**User:** Add "Implementation Details" after Methodology.
+
+**Agent:** What's the key point for Abstract?
+
+**User:** This report compares FCFS, SJF, RR, and Priority scheduling.
+
+**Agent:** What should go in Introduction? (background + objectives)
+
+**User:** CPU scheduling is fundamental to OS design. We compare average wait time and throughput.
+
+**Agent:** Any figures or tables to include?
+
+**User:** Figure for system architecture, table for performance comparison.
+
+**Agent:** Preview:
+
+```
+# Process Scheduling Algorithm Comparison
+**Authors:** Zhang Wei, Li Ming, Wang Fang
+
+## Abstract
+This report compares FCFS, SJF, RR, and Priority scheduling.
+
+## Introduction
+CPU scheduling is fundamental...
+
+**Figure 1.1 — System Architecture**
+
+## Methodology
+...
+
+**Table 3.1 — Performance Comparison**
+
+...
+```
+Generate? (yes/no)
+
+**User:** yes
+
+**Agent:** Saved to `/docs/doc-report/REPORT_OS_Process-Scheduling_2026-06-23.md`
 
 ---
 

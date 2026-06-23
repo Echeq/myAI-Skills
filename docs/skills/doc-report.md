@@ -6,7 +6,9 @@ Interactive report generator with figure/table placeholder auto-numbering.
 
 ## Quick Start
 
-Type `@doc-report` to start an interactive session and generate a structured Markdown report with auto-numbered figures and tables.
+Type `@doc-report` to start a 6-step interactive session. You'll answer: language → title → subject → authors → sections → content. The skill builds a structured report with auto-numbered figures and tables.
+
+> See the [usage example in SKILL.md](../../.agents/skills/doc-report/SKILL.md#usage-example) for a full walkthrough.
 
 ## Description
 

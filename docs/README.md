@@ -11,6 +11,7 @@ Welcome to the myAI-Skills documentation.
 | [ai-log-generate](skills/ai-log-generate.md) | `@ai-log` | Log every AI interaction |
 | [central-skills-hub-builder](skills/central-skills-hub-builder.md) | — | Build skills hub repo from scratch |
 | [doc-report](skills/doc-report.md) | `@doc-report` | Interactive report generator with figure/table placeholders |
+| [ai-audit](skills/ai-audit.md) | `@ai-audit` | Code quality auditor with health scoring |
 
 ## Guides
 

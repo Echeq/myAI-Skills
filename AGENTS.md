@@ -21,6 +21,7 @@ docs/         Usage, creation guides, conventions
 | `ai-log-generate` | `@ai-log` | Log every AI interaction |
 | `central-skills-hub-builder` | — | Build skills hub repo from scratch |
 | `doc-report` | `@doc-report` | Interactive report generator |
+| `ai-audit` | `@ai-audit` | Code quality auditor |
 
 ## Key Rules
 
