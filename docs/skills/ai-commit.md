@@ -6,7 +6,11 @@ Stage all changes and create a conventional commit.
 
 ## Quick Start
 
-Type `@ai-commit` to stage all changes and create a conventional commit in one step.
+1. Type `@ai-commit` in any conversation where you have uncommitted changes.
+2. The agent reads your `git diff` and generates a conventional commit message.
+3. Review the message. Confirm. All files are staged and committed.
+
+**Example:** `@ai-commit` → message generated → commit created.
 
 ## Description
 

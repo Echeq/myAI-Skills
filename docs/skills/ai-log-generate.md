@@ -6,7 +6,11 @@ Log every AI interaction — prompt, response, affected file, code before/after,
 
 ## Quick Start
 
-Type `@ai-log` after any AI interaction to log the full conversation to `docs/log/`.
+1. After any AI interaction (changes made, files edited), type `@ai-log`.
+2. The agent auto-detects your PC name, date, git branch, and reads the conversation.
+3. A log file is saved to `docs/log/AI-LOG-{timestamp}.txt` with prompt, response, and code diffs.
+
+**Example:** `@ai-log` → `docs/log/AI-LOG-2026-06-23-093931-DESKTOP-CR24C6G.txt`
 
 ## Description
 

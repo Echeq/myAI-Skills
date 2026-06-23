@@ -6,7 +6,12 @@ Lightweight interactive code quality auditor with weighted health scoring.
 
 ## Quick Start
 
-Type `@ai-audit` to start an interactive audit. The skill asks for scope, depth, and categories, then scans your codebase and generates a scored report.
+1. Type `@ai-audit` to start an interactive audit.
+2. The agent asks: scope (whole repo or dir) → depth (quick or deep) → categories (all, security, security+perf).
+3. The scan runs and returns findings grouped by severity with a health score (A–D).
+4. Report saved to `docs/ai-audit/AUDIT_REPORT_{date}.md`.
+
+**Example:** `@ai-audit` → whole repo → deep → all categories → 5 findings found, score 72 (B).
 
 ## Description
 

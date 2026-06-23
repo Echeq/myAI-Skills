@@ -1,14 +1,17 @@
-# doc-report
+# auto-report
 
 Interactive report generator with figure/table placeholder auto-numbering.
 
-> **Trigger:** `@doc-report` | `@doc-report --templates` | `@doc-report --history` | `@doc-report --config`
+> **Trigger:** `@auto-report` | `@auto-report --templates` | `@auto-report --history` | `@auto-report --config`
 
 ## Quick Start
 
-Type `@doc-report` to start a 6-step interactive session. You'll answer: language → title → subject → authors → sections → content. The skill builds a structured report with auto-numbered figures and tables.
+1. Type `@auto-report` to start the interactive wizard.
+2. Answer 6 questions: language → title → subject → authors → sections → content.
+3. Add figures and tables — the skill auto-numbers them (`Figure 1.1`, `Table 2.1`).
+4. Review the preview. Confirm. Report saved to `docs/auto-report/`.
 
-> See the [usage example in SKILL.md](../../.agents/skills/doc-report/SKILL.md#usage-example) for a full walkthrough.
+**Example:** `@auto-report` → English → "Process Scheduling" → OS → Group of 3 → confirm sections → add 2 figures → preview → saved.
 
 ## Description
 
@@ -18,14 +21,14 @@ Interactive report builder that asks the user step-by-step for language, subject
 
 | Command | Action |
 | :--- | :--- |
-| `@doc-report` | Full interactive report generation |
-| `@doc-report --templates` | List available templates |
-| `@doc-report --history` | Show past reports |
-| `@doc-report --config` | View/edit settings |
+| `@auto-report` | Full interactive report generation |
+| `@auto-report --templates` | List available templates |
+| `@auto-report --history` | Show past reports |
+| `@auto-report --config` | View/edit settings |
 
 ## Configuration
 
-Output: `/docs/doc-report/REPORT_{subject}_{date}.md`. Templates read from `.agents/skills/doc-report/templates/`. Session data persisted to `/docs/doc-report/.config.md`.
+Output: `/docs/auto-report/REPORT_{subject}_{date}.md`. Templates read from `.agents/skills/auto-report/templates/`. Session data persisted to `/docs/auto-report/.config.md`.
 
 > [!NOTE]
 > Language is selected during the interactive session: English, Chinese, or Bilingual. Figure/table placeholders adapt their format accordingly.
@@ -35,19 +38,19 @@ Output: `/docs/doc-report/REPORT_{subject}_{date}.md`. Templates read from `.age
 ## File Map
 
 ```
-.agents/skills/doc-report/           ← Skill definition & templates
+.agents/skills/auto-report/           ← Skill definition & templates
   SKILL.md                           ← Agent instructions (this skill)
   templates/                         ← Read-only template library
     README.md                        ← How to create templates
     default/
       template.md                    ← Built-in academic template
 
-docs/doc-report/                     ← Generated output (created on first use)
+docs/auto-report/                     ← Generated output (created on first use)
   README.md                          ← Output index
   .config.md                         ← Session history & defaults
   REPORT_{subject}_{date}.md         ← Generated reports
 
-docs/skills/doc-report.md            ← This documentation page
+docs/skills/auto-report.md            ← This documentation page
 ```
 
 ---
@@ -95,11 +98,11 @@ docs/skills/doc-report.md            ← This documentation page
 ## Dependency Graph
 
 ```
-@doc-report
-  ├── Reads  → .agents/skills/doc-report/templates/<name>/template.md
-  ├── Reads  → docs/doc-report/.config.md (if exists)
-  ├── Writes → docs/doc-report/REPORT_{subject}_{date}.md
-  └── Writes → docs/doc-report/.config.md
+@auto-report
+  ├── Reads  → .agents/skills/auto-report/templates/<name>/template.md
+  ├── Reads  → docs/auto-report/.config.md (if exists)
+  ├── Writes → docs/auto-report/REPORT_{subject}_{date}.md
+  └── Writes → docs/auto-report/.config.md
 ```
 
 **External dependencies:** None. Self-contained within the repo.

@@ -6,7 +6,12 @@ Architect for building a repository of modular, reusable, self-contained skills.
 
 ## Quick Start
 
-This skill defines the architecture. New skills built here follow its self-contained package structure.
+1. This skill defines the architecture for building new skills in this repo.
+2. When creating a new skill, your agent follows the structure: `.agents/skills/<name>/SKILL.md`.
+3. Each skill is self-contained with its own SKILL.md, README, and (when applicable) `src/`, `tests/`, `package.json`.
+4. Default tech: TypeScript. Config injected via parameters. SemVer starting at `1.0.0`.
+
+**Example:** New skill request → agent creates `.agents/skills/my-skill/SKILL.md` following the hub builder rules.
 
 ## Description
 

@@ -12,7 +12,7 @@ Browse the available skills below, or read the [Skill Index](docs/README.md) for
 | [ai-docs](docs/skills/ai-docs.md) | `@ai-docs` | Doc generation, update, and audit |
 | [ai-log-generate](docs/skills/ai-log-generate.md) | `@ai-log` | Log every AI interaction |
 | [central-skills-hub-builder](docs/skills/central-skills-hub-builder.md) | — | Build skills hub repo from scratch |
-| [doc-report](docs/skills/doc-report.md) | `@doc-report` | Interactive report generator with figure/table placeholders |
+| [auto-report](docs/skills/auto-report.md) | `@auto-report` | Interactive report generator with figure/table placeholders |
 | [ai-audit](docs/skills/ai-audit.md) | `@ai-audit` | Code quality auditor with health scoring |
 
 ## Repository Structure

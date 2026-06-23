@@ -6,7 +6,11 @@ Generates, updates, and audits Markdown documentation in `/docs/`.
 
 ## Quick Start
 
-Type `@ai-docs` to regenerate the skill index and all per-skill documentation pages.
+1. Type `@ai-docs` to regenerate the skill index and all per-skill documentation pages.
+2. The agent scans `.agents/skills/`, extracts metadata, and rebuilds `/docs/README.md` + `/docs/skills/<name>.md`.
+3. Use `@ai-docs audit` to check compliance. Use `@ai-docs update` for incremental changes.
+
+**Example:** `@ai-docs` → all docs regenerated. `@ai-docs audit` → gets a score report.
 
 ## Description
 

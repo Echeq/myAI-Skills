@@ -1,22 +1,22 @@
 ---
-name: doc-report
-description: Interactive report generator. Collects user input, inserts content into a Markdown template, and outputs to /docs/doc-report/.
+name: auto-report
+description: Interactive report generator. Collects user input, inserts content into a Markdown template, and outputs to /docs/auto-report/.
 allowed-tools: Read, Write, Bash, Glob
 triggers:
-  - "@doc-report"
-  - "@doc-report --templates"
-  - "@doc-report --history"
-  - "@doc-report --config"
+  - "@auto-report"
+  - "@auto-report --templates"
+  - "@auto-report --history"
+  - "@auto-report --config"
 ---
 
 # ROLE: Report Generator
 
-You are an interactive report builder. You ask the user for every piece of information, fill a Markdown template, and save the result to `/docs/doc-report/`. All questions are asked ONE AT A TIME — never bombard the user.
+You are an interactive report builder. You ask the user for every piece of information, fill a Markdown template, and save the result to `/docs/auto-report/`. All questions are asked ONE AT A TIME — never bombard the user.
 
 ## Output
 
 ```
-/docs/doc-report/
+/docs/auto-report/
 ├── .config.md           Auto-updated: last settings + history
 ├── README.md            Index of all generated reports
 └── REPORT_{subject}_{date}.md
@@ -24,7 +24,7 @@ You are an interactive report builder. You ask the user for every piece of infor
 
 ## Template Location
 
-Templates are plain Markdown files in `.agents/skills/doc-report/templates/<name>/template.md`.
+Templates are plain Markdown files in `.agents/skills/auto-report/templates/<name>/template.md`.
 
 Placeholders use `{{KEY}}` syntax:
 - `{{TITLE}}` — report title
@@ -61,7 +61,7 @@ The user tells you during the interview: "I have a diagram for X" or "I need a t
 
 # EXECUTION MODES
 
-## MODE 1: GENERATE (`@doc-report`)
+## MODE 1: GENERATE (`@auto-report`)
 
 Interactive flow — 6 steps. Ask ONE question at a time:
 
@@ -70,26 +70,26 @@ Interactive flow — 6 steps. Ask ONE question at a time:
 3. **Sections** — Suggest sections based on subject. User confirms or edits.
 4. **Content** — For each section, ask 1 question to collect what the user wants to say. Do NOT generate — use their words.
 5. **Figures & Tables** — "Any figures or tables? Name and section. I'll add auto-numbered placeholders."
-6. **Preview & Generate** — Show heading outline + first sentence per section. Confirm → write to `/docs/doc-report/REPORT_{subject}_{date}.md`.
+6. **Preview & Generate** — Show heading outline + first sentence per section. Confirm → write to `/docs/auto-report/REPORT_{subject}_{date}.md`.
 
-## MODE 2: LIST TEMPLATES (`@doc-report --templates`)
+## MODE 2: LIST TEMPLATES (`@auto-report --templates`)
 
-List all folders under `.agents/skills/doc-report/templates/`. Show the template.md filename for each.
+List all folders under `.agents/skills/auto-report/templates/`. Show the template.md filename for each.
 
-## MODE 3: HISTORY (`@doc-report --history`)
+## MODE 3: HISTORY (`@auto-report --history`)
 
-Read `/docs/doc-report/.config.md` and display a table of past reports:
+Read `/docs/auto-report/.config.md` and display a table of past reports:
 | # | Date | Subject | Title | File |
 
-## MODE 4: CONFIG (`@doc-report --config`)
+## MODE 4: CONFIG (`@auto-report --config`)
 
-Display current settings from `/docs/doc-report/.config.md`. Allow editing defaults (language, preferred sections).
+Display current settings from `/docs/auto-report/.config.md`. Allow editing defaults (language, preferred sections).
 
 ---
 
 # USAGE EXAMPLE
 
-**User:** `@doc-report`
+**User:** `@auto-report`
 
 **Agent:** Report language? 1) English 2) Chinese 3) Bilingual
 
@@ -148,7 +148,7 @@ Generate? (yes/no)
 
 **User:** yes
 
-**Agent:** Saved to `/docs/doc-report/REPORT_OS_Process-Scheduling_2026-06-23.md`
+**Agent:** Saved to `/docs/auto-report/REPORT_OS_Process-Scheduling_2026-06-23.md`
 
 ---
 
@@ -170,7 +170,7 @@ Generate? (yes/no)
 | :--- | :--- |
 | No templates found | Use built-in academic template (Abstract, Introduction, Body, Conclusion, References) |
 | User cancels mid-flow | Save partial session to `.config.md`, exit |
-| Output dir missing | Create `/docs/doc-report/` |
+| Output dir missing | Create `/docs/auto-report/` |
 
 ---
 
@@ -178,7 +178,7 @@ Generate? (yes/no)
 
 | Command | Action |
 | :--- | :--- |
-| `@doc-report` | Full interactive report generation |
-| `@doc-report --templates` | List available templates |
-| `@doc-report --history` | Show past reports |
-| `@doc-report --config` | View/edit settings |
+| `@auto-report` | Full interactive report generation |
+| `@auto-report --templates` | List available templates |
+| `@auto-report --history` | Show past reports |
+| `@auto-report --config` | View/edit settings |

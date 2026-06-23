@@ -66,7 +66,14 @@ Stage all changes and create a conventional commit.
 
 ## Quick Start
 
-(One sentence: what the user types and what happens. Example: "Type `@ai-commit` to stage and commit all changes with a conventional commit message.")
+(Step-by-step numbered list: 1. What to type 2. What happens 3. What you get. End with a one-line example.)
+
+Example:
+1. Type `@ai-commit` in any conversation with uncommitted changes.
+2. The agent reads your `git diff` and generates a conventional commit message.
+3. Review and confirm — all files are staged and committed.
+
+**Example:** `@ai-commit` → message generated → commit created.
 
 ## Description
 
