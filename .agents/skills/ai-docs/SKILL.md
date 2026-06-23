@@ -4,6 +4,8 @@ description: Generates, updates, and audits Markdown documentation in /docs/.
 allowed-tools: Read, Write, Bash, Glob, Grep
 triggers:
   - "@ai-docs"
+  - "@ai-docs pro"
+  - "@ai-docs professional"
   - "@ai-docs update"
   - "@ai-docs audit"
 ---
@@ -13,19 +15,73 @@ You are the **Supreme Documentation Architect**. Your purpose is to create, main
 
 # GLOBAL STANDARDS (APPLY TO ALL MODES)
 1. **Language**: Professional **English** exclusively.
-2. **Location**: All docs live in `/docs/`. Organize into subdirectories (`/docs/guides/`, etc.) as the project grows.
-3. **Root README**: Generate a landing page with Table of Contents linking to all docs.
+2. **Location**: All docs live in `/docs/`. Organize into subdirectories (`/docs/skills/`, `/docs/guides/`, etc.) as the project grows.
+3. **Root README**: A skill index page with Table of Contents linking to all skill pages.
 4. **No Wall-Text**: Every ~4 lines = break into bullet points, tables, or code blocks.
 5. **Visual Admonitions**: Use GitHub-style alerts (`> [!NOTE]`, `> [!WARNING]`, etc.).
-6. **Cross-Links**: Every file ends with: `**[⬆ Back to Top](#)** | **[📂 Docs Index](/docs/README.md)**`.
+6. **Cross-Links**: Every file ends with: `**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**`.
 
-# DOCUMENTATION STYLE STANDARD (Títulos y Jerarquía)
-- **H1 (`#`)**: Único por archivo (título principal).
-- **H2 (`##`)**: Secciones mayores (e.g., "Specification", "Parameters").
-- **H3 (`###`)**: Subsecciones (e.g., "Request Headers", "Error Codes").
-- **H4 (`####`)**: Detalles específicos (úsese con moderación).
-- **Código**: Siempre especificar lenguaje (e.g., ```typescript, ```json, ```mermaid).
-- **Tablas**: Siempre con cabecera y alineación: `| :--- | :--- | :--- |`.
+# DOCUMENTATION STYLE STANDARD
+- **H1 (`#`)**: One per file (title).
+- **H2 (`##`)**: Major sections (e.g., "Specification", "Parameters").
+- **H3 (`###`)**: Subsections (e.g., "Request Headers", "Error Codes").
+- **H4 (`####`)**: Specific details (use sparingly).
+- **Code blocks**: Always specify language (```typescript, ```json, ```mermaid).
+- **Tables**: Always with header and alignment: `| :--- | :--- | :--- |`.
+
+---
+
+# DOC GENERATION OUTPUT
+
+When generating from scratch, create this structure:
+
+```
+/docs/README.md              ← Skill index (table of all skills)
+/docs/skills/<skill-name>.md ← One page per skill
+```
+
+## Skill Index (`/docs/README.md`)
+
+A landing page listing every skill in `.agents/skills/`:
+
+```markdown
+# Skill Index
+
+| Skill | Trigger | Description |
+|-------|---------|-------------|
+| ai-commit | `@ai-commit` | Stage all changes and create a conventional commit |
+| ai-docs | `@ai-docs` | Doc generation, update, and audit |
+
+## Per-Skill Pages
+
+- [ai-commit](skills/ai-commit.md)
+- [ai-docs](skills/ai-docs.md)
+- ...
+```
+
+## Per-Skill Page (`/docs/skills/<name>.md`)
+
+Generated from each `.agents/skills/<name>/SKILL.md` frontmatter:
+
+```markdown
+# ai-commit
+
+Stage all changes and create a conventional commit.
+
+> **Trigger:** `@ai-commit`
+
+## Description
+
+(Explain what the skill does, extracted from SKILL.md or inferred.)
+
+## Usage
+
+(How to invoke it. Example: `@ai-commit` in any conversation.)
+
+## Configuration
+
+(Any parameters, conventions, or notes from SKILL.md.)
+```
 
 ---
 
@@ -33,11 +89,14 @@ You are the **Supreme Documentation Architect**. Your purpose is to create, main
 
 ## MODE 1: STANDARD (`@ai-docs`)
 - **Trigger**: `@ai-docs`.
-- **Scope**: Scans the ENTIRE project root.
+- **Scope**: Full generation — scans `.agents/skills/` and regenerates `/docs/README.md` (skill index) and `/docs/skills/<name>.md` (one page per skill).
+- **Pipeline**:
+  1. Glob `.agents/skills/*/SKILL.md`
+  2. Extract frontmatter: `name`, `description`, `triggers`
+  3. Generate `/docs/README.md` as the skill index table
+  4. Generate `/docs/skills/<name>.md` for each skill using the Universal Template
 - **Audience**: All levels (Juniors, PMs, Testers).
 - **Tone**: Clear, instructional, conversational but professional.
-- **Template**: Universal Plantilla (Plain English Summary + Technical Spec + Parameters + Examples + Common Errors).
-- **Jerga**: Basic industry terms (API, JSON, Endpoint, Token).
 
 ## MODE 2: PROFESSIONAL (`@ai-docs professional` or `@ai-docs pro {directory}`)
 - **Trigger**: `@ai-docs professional` or `@ai-docs pro` + optional directory/file.
@@ -52,39 +111,38 @@ You are the **Supreme Documentation Architect**. Your purpose is to create, main
 - **Jerga**: Advanced (Idempotency, State Mutation, Backpressure, Throttling, etc.).
 
 ## MODE 3: UPDATE (`@ai-docs update`)
-- **Trigger**: `@ai-docs update` (or `@ai-docs update src/apis/auth.ts`).
+- **Trigger**: `@ai-docs update` (or `@ai-docs update <skill-name>`).
 - **Objective**: Incremental update, NOT full regeneration.
 - **Execution Steps**:
-  1. **Scan**: Compare source code file modification timestamps vs `/docs/*.md` timestamps.
-  2. **Identify**: If specific file/dir given, focus only on that. If not, update all outdated files.
-  3. **Preserve**: Detect manual edits inside Markdown. **Never overwrite** sections containing `<!-- MANUAL -->` or `<!-- CUSTOM -->`. Only rewrite auto-generated sections.
-  4. **Sync Index**: If new files appear, update `/README.md`. If files are deleted, prompt user before removal.
+  1. **Scan**: List `.agents/skills/*/SKILL.md` and compare against `/docs/skills/<name>.md`.
+  2. **Identify**: If a specific skill name given, update only that page. If not, update all outdated or missing pages.
+  3. **Preserve**: Detect manual edits inside Markdown. **Never overwrite** sections containing `<!-- MANUAL -->` or `<!-- CUSTOM -->`.
+  4. **Sync Index**: When skills are added or removed, update `/docs/README.md` skill index table.
   5. **Changelog**: Append `<!-- Last updated: [DATE] via @ai-docs update -->`.
-  6. **Report**: Output summary: "Updated X files, skipped Y (manual edits), added Z entries."
+  6. **Report**: Output: "Updated X pages, skipped Y (manual edits), added Z new skills to index."
 
 ## MODE 4: AUDIT (`@ai-docs audit`)
-- **Trigger**: `@ai-docs audit` (or `@ai-docs audit --fix` to auto-repair minor issues, or `@ai-docs audit /docs/api/` for specific paths).
+- **Trigger**: `@ai-docs audit` (or `@ai-docs audit --fix`, or `@ai-docs audit <skill-name>`).
 - **Objective**: Evaluate documentation quality and compliance with the Global Standards.
 - **Output**: Generates `DOCS_AUDIT_REPORT.md` in the project root.
-- **Audit Checklist (enforced)**:
+- **Audit Checklist**:
   - **Critical (🔴)**:
-    - Missing mandatory folders (`/docs/api/`, etc.) or Root `README.md`.
+    - `.agents/skills/<name>/SKILL.md` without a corresponding `/docs/skills/<name>.md` page.
+    - `/docs/README.md` missing or missing skills from the index table.
     - Broken internal links (404s).
-    - Source files without corresponding documentation (uncovered code).
-    - Missing mandatory sections in any `.md` file (H1, H2 Parameters/Technical Spec, H2 Examples, Bottom links).
-    - Non-English text in final output (must be English).
+    - Non-English text in generated docs.
   - **Warnings (🟡)**:
     - Incorrect heading hierarchy (e.g., H3 without H2).
     - Tables missing alignment (`:---`).
     - Code blocks without specified language.
-    - Paragraphs exceeding 5 lines (potential wall-text).
+    - Missing sections (Description, Usage, Configuration) in a skill page.
+    - Paragraphs exceeding 5 lines.
   - **Suggestions (🔵)**:
-    - Missing color alerts (`> [!NOTE]`, `> [!WARNING]`) in critical config sections.
-    - Missing badges in root README.
-    - Missing cross-links between related files.
-- **Scoring**: Calculate a compliance score (0-100%) based on Critical (40% weight), Warnings (30%), and Suggestions (30%).
-- **Auto-fix (`--fix`)**: Attempts to correct Warnings and Suggestions automatically (fix heading hierarchy, add language specifiers, break long paragraphs, align tables). Critical issues are reported but require human intervention.
-- **Report Format**: Beautiful Markdown with a summary table, list of failures by severity, and a final verdict (PASS / FAIL / NEEDS IMPROVEMENT).
+    - Missing color alerts (`> [!NOTE]`, `> [!WARNING]`).
+    - Missing cross-links between related pages.
+- **Scoring**: Compliance score (0-100%) — Critical 40%, Warnings 30%, Suggestions 30%.
+- **Auto-fix (`--fix`)**: Attempts to correct Warnings and Suggestions automatically. Critical issues are reported for human intervention.
+- **Report Format**: Summary table, failures by severity, verdict (PASS / FAIL / NEEDS IMPROVEMENT).
 
 ---
 
@@ -133,5 +191,5 @@ Detailed technical breakdown. (In Professional mode, add ADR, Complexity, and De
 
 ---
 
-**[⬆ Back to Top](#)** | **[📂 Docs Index](/docs/README.md)**
+**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
 ```

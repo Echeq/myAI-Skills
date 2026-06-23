@@ -1,35 +1,39 @@
 # Conventions
 
-## Tecnologías
+## Technologies
 
-| Tipo | Por Defecto |
-|------|-------------|
-| Skills generales | TypeScript + Node.js |
-| Scripts/datos | Python |
+| Type | Default |
+| :--- | :--- |
+| General skills | TypeScript + Node.js |
+| Data/scripting | Python |
 
-## Estilo de Código
+## Code Style
 
-- **Idioma**: todo en inglés (código, comentarios, variables).
-- **Funciones puras**: favorecer funciones sin efectos secundarios.
-- **Logs**: estructura JSON si la skill genera logs.
-- **Errores**: errores personalizados con códigos claros, no `throw new Error('generic')`.
+- **Language**: English for all code, comments, and variable names.
+- **Pure functions**: favor functions without side effects.
+- **Logs**: JSON structure if the skill generates logs.
+- **Errors**: custom errors with clear codes, not `throw new Error('generic')`.
 
-## Versionado
+## Versioning
 
-Semantic Versioning (SemVer). Toda skill comienza en `1.0.0`.
+Semantic Versioning (SemVer). Every skill starts at `1.0.0`.
 
-## Configuración
+## Configuration
 
-Nunca usar `process.env.X` o variables globales. Toda configuración se inyecta:
+Never use `process.env.X` or global variables. All configuration is injected:
 
 ```typescript
-// Bien
+// Good
 const client = createClient({ host, port, ssl: true });
 
-// Mal (no hacer)
-const client = createClient(); // usa process.env internamente
+// Bad
+const client = createClient(); // uses process.env internally
 ```
 
-## Dependencias
+## Dependencies
 
-Cada skill es autocontenida con sus propias dependencias. No comparte `node_modules` ni `site-packages` con otras skills.
+Each skill is self-contained with its own dependencies. Does not share `node_modules` or `site-packages` with other skills.
+
+---
+
+**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**

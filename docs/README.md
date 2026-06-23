@@ -1,24 +1,30 @@
-# myAI-Skills Docs
+# Skill Index
 
-Bienvenido a la documentación del repositorio de skills.
+Welcome to the myAI-Skills documentation.
 
-## Contenido
+## Skills
 
-| Documento | Descripción |
-|-----------|-------------|
-| [usage.md](usage.md) | Cómo consumir las skills desde proyectos externos |
-| [creating-skills.md](creating-skills.md) | Guía para crear y publicar nuevas skills |
-| [conventions.md](conventions.md) | Convenciones, estándares y tecnologías |
+| Skill | Trigger | Description |
+| :--- | :--- | :--- |
+| ai-commit | `@ai-commit` | Stage all changes and create a conventional commit |
+| ai-docs | `@ai-docs` | Doc generation, update, and audit |
+| ai-log-generate | `@ai-log` | Log every AI interaction |
+| central-skills-hub-builder | — | Build skills hub repo from scratch |
 
-## Estructura del Repositorio
+## Per-Skill Pages
 
-```
-.agents/skills/<name>/
-├── SKILL.md        # Definición del skill (frontmatter + instrucciones)
-├── README.md       # Documentación de la skill
-├── src/            # Código fuente (cuando aplique)
-├── tests/          # Tests (cuando aplique)
-└── package.json    # Dependencias (cuando aplique)
-```
+- [ai-commit](skills/ai-commit.md)
+- [ai-docs](skills/ai-docs.md)
+- [ai-log-generate](skills/ai-log-generate.md)
+- [central-skills-hub-builder](skills/central-skills-hub-builder.md)
 
-> **Nota:** Actualmente las 4 skills existentes son archivos `.md` sin código empaquetado. La estructura con `src/`, `tests/` y `package.json` es el objetivo para skills futuras.
+## More Docs
+
+- [Usage Guide](usage.md)
+- [Creating Skills](creating-skills.md)
+- [Conventions](conventions.md)
+- [Architecture](ARCHITECTURE.md)
+
+---
+
+**[⬆ Back to Top](#)**

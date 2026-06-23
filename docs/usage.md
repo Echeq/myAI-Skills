@@ -1,23 +1,23 @@
 # Usage
 
-Las skills están diseñadas para consumirse desde cualquier proyecto externo.
+Skills are designed to be consumed from any external project.
 
-## Instalación Local
+## Local Installation
 
-Cada skill es un paquete independiente. Para usarla en otro proyecto:
+Each skill is an independent package. To use it in another project:
 
 ```bash
 # npm (TypeScript/Node.js)
-npm install --save <ruta-al-repo>/.agents/skills/<skill-name>
+npm install --save <repo-path>/.agents/skills/<skill-name>
 
 # pip (Python)
-pip install -e <ruta-al-repo>/.agents/skills/<skill-name>
+pip install -e <repo-path>/.agents/skills/<skill-name>
 ```
 
-## Importación
+## Import
 
 ```typescript
-// TypeScript — la API exacta depende de cada skill
+// TypeScript — exact API depends on each skill
 import { createClient } from '@hub/skill-name';
 
 const client = createClient({ host: 'localhost', port: 5432 });
@@ -30,16 +30,20 @@ from skill_name import create_client
 client = create_client(host='localhost', port=5432)
 ```
 
-## Configuración
+## Configuration
 
-Las skills nunca leen variables de entorno globales. Toda configuración se inyecta por parámetro.
+Skills never read global environment variables. All configuration is injected via parameters.
 
 ```typescript
-// Bien — configuración inyectada
+// Good — injected config
 const logger = createLogger({ level: 'info', format: 'json' });
 
-// Mal — depende de entorno global
-const logger = createLogger(); // process.env.LOG_LEVEL internamente
+// Bad — depends on global env
+const logger = createLogger(); // process.env.LOG_LEVEL internally
 ```
 
-Cada skill documenta sus opciones de configuración en su propio `README.md`.
+Each skill documents its configuration options in its own `README.md`.
+
+---
+
+**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**

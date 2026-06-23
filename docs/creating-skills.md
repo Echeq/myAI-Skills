@@ -1,39 +1,39 @@
 # Creating Skills
 
-Guía para crear una nueva skill en este repositorio.
+Guide to creating a new skill in this repository.
 
-## Estructura Mínima
+## Minimum Structure
 
 ```
 .agents/skills/<skill-name>/
-├── SKILL.md          # Metadatos: nombre, descripción, herramientas permitidas
-├── src/index.ts      # Código principal (o .py si es Python)
+├── SKILL.md          # Metadata: name, description, allowed tools
+├── src/index.ts      # Main code (or .py for Python)
 ├── tests/index.test.ts
-├── README.md         # Documentación con ejemplos de uso
-└── package.json      # Dependencias y scripts (o requirements.txt)
+├── README.md         # Documentation with usage examples
+└── package.json      # Dependencies and scripts (or requirements.txt)
 ```
 
 ## SKILL.md
 
-Archivo con frontmatter YAML que define el skill como agente OpenCode:
+YAML frontmatter file that defines the skill as an OpenCode agent:
 
 ```yaml
 ---
 name: my-skill
-description: Breve descripción de lo que hace
+description: Brief description of what it does
 allowed-tools: Read, Write, Bash
 ---
 ```
 
-## Requisitos
+## Requirements
 
-1. **Tests**: mínimo un test unitario y uno de integración en `tests/`.
-2. **Documentación**: el `README.md` debe incluir al menos 2 ejemplos de uso.
-3. **Config inyectable**: la skill recibe configuración por parámetro, nunca de variables globales.
-4. **Tipado**: TypeScript strict types o Python type hints.
-5. **SemVer**: versión inicial `1.0.0`; documenta en el README cómo se versiona.
+1. **Tests**: at least one unit test and one integration test in `tests/`.
+2. **Documentation**: `README.md` must include at least 2 usage examples.
+3. **Inject config**: skill receives configuration via parameters, never from global variables.
+4. **Typing**: TypeScript strict types or Python type hints.
+5. **SemVer**: initial version `1.0.0`; document versioning in the README.
 
-## Scripts Recomendados (package.json)
+## Recommended Scripts (package.json)
 
 ```json
 {
@@ -44,3 +44,10 @@ allowed-tools: Read, Write, Bash
   }
 }
 ```
+
+> [!NOTE]
+> The `src/`, `tests/`, `README.md`, and `package.json` structure is the target for future skills. Current skills are plain `.md` files.
+
+---
+
+**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
