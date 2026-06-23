@@ -20,11 +20,10 @@
 
 | Before | After | File |
 |--------|-------|------|
-| Missing "Configuration" section | Added Configuration section before Output Format | `docs/skills/ai-log-generate.md` |
-| Section named "Principles" | Renamed to "Configuration / Principles" | `docs/skills/central-skills-hub-builder.md` |
+| Missing Description, Usage, Configuration | Added standard sections above File Map | `docs/skills/doc-report.md` |
 
 ---
 
 ## Verdict
 
-**PASS** — Full compliance (100%).
+**PASS** — Full compliance (100%). 5/5 skills documented with Quick Start, Description, Usage, Configuration, cross-links, and color alerts.

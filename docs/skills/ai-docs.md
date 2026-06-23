@@ -4,6 +4,10 @@ Generates, updates, and audits Markdown documentation in `/docs/`.
 
 > **Trigger:** `@ai-docs` | `@ai-docs pro` | `@ai-docs professional` | `@ai-docs update` | `@ai-docs audit`
 
+## Quick Start
+
+Type `@ai-docs` to regenerate the skill index and all per-skill documentation pages.
+
 ## Description
 
 Documentation lifecycle agent with 4 modes: standard (full regeneration), professional (deep-dive with ADR), update (incremental), and audit (compliance check).

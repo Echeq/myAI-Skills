@@ -4,6 +4,10 @@ Architect for building a repository of modular, reusable, self-contained skills.
 
 > **Trigger:** No trigger (meta-skill, invoked by context)
 
+## Quick Start
+
+This skill defines the architecture. New skills built here follow its self-contained package structure.
+
 ## Description
 
 Defines the architecture, principles, and workflow for building new skills in this repository. Not a triggerable agent but a specification loaded when building skills from scratch.

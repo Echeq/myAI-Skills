@@ -4,6 +4,10 @@ Log every AI interaction — prompt, response, affected file, code before/after,
 
 > **Trigger:** `@ai-log`
 
+## Quick Start
+
+Type `@ai-log` after any AI interaction to log the full conversation to `docs/log/`.
+
 ## Description
 
 Captures the full conversation context of an AI interaction and writes a structured log file to `docs/log/`.

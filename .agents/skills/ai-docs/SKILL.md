@@ -64,6 +64,10 @@ Stage all changes and create a conventional commit.
 
 > **Trigger:** `@ai-commit`
 
+## Quick Start
+
+(One sentence: what the user types and what happens. Example: "Type `@ai-commit` to stage and commit all changes with a conventional commit message.")
+
 ## Description
 
 (Explain what the skill does, extracted from SKILL.md or inferred.)
@@ -98,7 +102,7 @@ Stage all changes and create a conventional commit.
   1. Glob `.agents/skills/*/SKILL.md`
   2. Extract frontmatter: `name`, `description`, `triggers`
   3. Generate `/docs/README.md` as the skill index table. Each skill name must be a clickable link to `skills/<name>.md`.
-  4. Generate `/docs/skills/<name>.md` for each skill using the Per-Skill Page template (includes Description, Usage, Configuration, color alerts, cross-links).
+  4. Generate `/docs/skills/<name>.md` for each skill using the Per-Skill Page template (Quick Start, Description, Usage, Configuration, color alerts, cross-links).
 - **Audience**: All levels (Juniors, PMs, Testers).
 - **Tone**: Clear, instructional, conversational but professional.
 
@@ -140,7 +144,7 @@ Stage all changes and create a conventional commit.
     - Incorrect heading hierarchy (e.g., H3 without H2).
     - Tables missing alignment (`:---`).
     - Code blocks without specified language.
-    - Missing sections (Description, Usage, Configuration) in a skill page.
+    - Missing sections (Quick Start, Description, Usage, Configuration) in a skill page.
     - Paragraphs exceeding 5 lines.
     - Skill names in `/docs/README.md` index table are not clickable links.
   - **Suggestions (🔵)**:

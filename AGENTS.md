@@ -2,7 +2,7 @@
 
 ## Status
 
-Repo de skills OpenCode. Las 4 skills existentes son archivos `.md` sin código, deps, ni tests. No hay `opencode.json`, `package.json`, CI, ni build system.
+Repo de skills OpenCode. Las 5 skills existentes son archivos `.md` sin código, deps, ni tests. No hay `opencode.json`, `package.json`, CI, ni build system.
 
 ## Structure
 

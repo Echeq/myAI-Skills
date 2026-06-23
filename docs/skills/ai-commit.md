@@ -4,6 +4,10 @@ Stage all changes and create a conventional commit.
 
 > **Trigger:** `@ai-commit`
 
+## Quick Start
+
+Type `@ai-commit` to stage all changes and create a conventional commit in one step.
+
 ## Description
 
 Stages all tracked changes and commits them using conventional commit format. Excludes `.gitignore` entries (`.env`, `node_modules/`, `backend/generated/prisma/`).

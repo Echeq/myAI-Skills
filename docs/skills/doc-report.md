@@ -4,6 +4,30 @@ Interactive report generator with figure/table placeholder auto-numbering.
 
 > **Trigger:** `@doc-report` | `@doc-report --templates` | `@doc-report --history` | `@doc-report --config`
 
+## Quick Start
+
+Type `@doc-report` to start an interactive session and generate a structured Markdown report with auto-numbered figures and tables.
+
+## Description
+
+Interactive report builder that asks the user step-by-step for language, subject, title, authors, sections, and content. Fills a Markdown template and outputs a complete report. Supports figure and table placeholder auto-numbering per section.
+
+## Usage
+
+| Command | Action |
+| :--- | :--- |
+| `@doc-report` | Full interactive report generation |
+| `@doc-report --templates` | List available templates |
+| `@doc-report --history` | Show past reports |
+| `@doc-report --config` | View/edit settings |
+
+## Configuration
+
+Output: `/docs/doc-report/REPORT_{subject}_{date}.md`. Templates read from `.agents/skills/doc-report/templates/`. Session data persisted to `/docs/doc-report/.config.md`.
+
+> [!NOTE]
+> Language is selected during the interactive session: English, Chinese, or Bilingual. Figure/table placeholders adapt their format accordingly.
+
 ---
 
 ## File Map
