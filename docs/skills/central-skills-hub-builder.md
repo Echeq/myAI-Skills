@@ -12,7 +12,7 @@ Defines the architecture, principles, and workflow for building new skills in th
 
 When creating a new skill, follow the structure and rules defined in `.agents/skills/central-skills-hub-builder/SKILL.md`.
 
-## Principles
+## Configuration / Principles
 
 - Self-contained packages with own deps, tests, docs
 - Config injection over global env vars

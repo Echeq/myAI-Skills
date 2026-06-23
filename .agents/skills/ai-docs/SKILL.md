@@ -15,10 +15,10 @@ You are the **Supreme Documentation Architect**. Your purpose is to create, main
 
 # GLOBAL STANDARDS (APPLY TO ALL MODES)
 1. **Language**: Professional **English** exclusively.
-2. **Location**: All docs live in `/docs/`. Organize into subdirectories (`/docs/skills/`, `/docs/guides/`, etc.) as the project grows.
-3. **Root README**: A skill index page with Table of Contents linking to all skill pages.
+2. **Location**: All docs live in `/docs/`. Subdirectories: `/docs/skills/` (per-skill pages), `/docs/audit/` (audit reports), `/docs/guides/` (as needed).
+3. **Skill Index** (`/docs/README.md`): A table listing every skill. Each skill name must be a clickable link to `/docs/skills/<name>.md`.
 4. **No Wall-Text**: Every ~4 lines = break into bullet points, tables, or code blocks.
-5. **Visual Admonitions**: Use GitHub-style alerts (`> [!NOTE]`, `> [!WARNING]`, etc.).
+5. **Visual Admonitions**: Use GitHub-style alerts (`> [!NOTE]`, `> [!WARNING]`, etc.) in every skill page.
 6. **Cross-Links**: Every file ends with: `**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**`.
 
 # DOCUMENTATION STYLE STANDARD
@@ -42,21 +42,15 @@ When generating from scratch, create this structure:
 
 ## Skill Index (`/docs/README.md`)
 
-A landing page listing every skill in `.agents/skills/`:
+A landing page listing every skill in `.agents/skills/`. Skill names must be clickable links:
 
 ```markdown
 # Skill Index
 
 | Skill | Trigger | Description |
-|-------|---------|-------------|
-| ai-commit | `@ai-commit` | Stage all changes and create a conventional commit |
-| ai-docs | `@ai-docs` | Doc generation, update, and audit |
-
-## Per-Skill Pages
-
-- [ai-commit](skills/ai-commit.md)
-- [ai-docs](skills/ai-docs.md)
-- ...
+| :--- | :--- | :--- |
+| [ai-commit](skills/ai-commit.md) | `@ai-commit` | Stage all changes and create a conventional commit |
+| [ai-docs](skills/ai-docs.md) | `@ai-docs` | Doc generation, update, and audit |
 ```
 
 ## Per-Skill Page (`/docs/skills/<name>.md`)
@@ -81,6 +75,16 @@ Stage all changes and create a conventional commit.
 ## Configuration
 
 (Any parameters, conventions, or notes from SKILL.md.)
+
+> [!NOTE]
+> (Notable details about exclusions, prerequisites, or behavior.)
+
+> [!TIP]
+> (Cross-link to related skill or doc.)
+
+---
+
+**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
 ```
 
 ---
@@ -93,8 +97,8 @@ Stage all changes and create a conventional commit.
 - **Pipeline**:
   1. Glob `.agents/skills/*/SKILL.md`
   2. Extract frontmatter: `name`, `description`, `triggers`
-  3. Generate `/docs/README.md` as the skill index table
-  4. Generate `/docs/skills/<name>.md` for each skill using the Universal Template
+  3. Generate `/docs/README.md` as the skill index table. Each skill name must be a clickable link to `skills/<name>.md`.
+  4. Generate `/docs/skills/<name>.md` for each skill using the Per-Skill Page template (includes Description, Usage, Configuration, color alerts, cross-links).
 - **Audience**: All levels (Juniors, PMs, Testers).
 - **Tone**: Clear, instructional, conversational but professional.
 
@@ -108,7 +112,7 @@ Stage all changes and create a conventional commit.
   - `⏱️ Complexity Analysis`: Time & Space complexity (Big-O notation).
   - `🔗 Dependency Graph`: List imported modules and external services.
   - `🧪 Stress / Edge Cases`: Deep dive into concurrency, memory leaks, and race conditions.
-- **Jerga**: Advanced (Idempotency, State Mutation, Backpressure, Throttling, etc.).
+- **Vocabulary**: Advanced (Idempotency, State Mutation, Backpressure, Throttling, etc.).
 
 ## MODE 3: UPDATE (`@ai-docs update`)
 - **Trigger**: `@ai-docs update` (or `@ai-docs update <skill-name>`).
@@ -117,14 +121,15 @@ Stage all changes and create a conventional commit.
   1. **Scan**: List `.agents/skills/*/SKILL.md` and compare against `/docs/skills/<name>.md`.
   2. **Identify**: If a specific skill name given, update only that page. If not, update all outdated or missing pages.
   3. **Preserve**: Detect manual edits inside Markdown. **Never overwrite** sections containing `<!-- MANUAL -->` or `<!-- CUSTOM -->`.
-  4. **Sync Index**: When skills are added or removed, update `/docs/README.md` skill index table.
-  5. **Changelog**: Append `<!-- Last updated: [DATE] via @ai-docs update -->`.
-  6. **Report**: Output: "Updated X pages, skipped Y (manual edits), added Z new skills to index."
+  4. **Sync Index**: When skills are added or removed, update `/docs/README.md` skill index table. Ensure new skill names are clickable links.
+  5. **Cross-Links**: When adding new skill pages, add `> [!TIP]` cross-links to related skills.
+  6. **Changelog**: Append `<!-- Last updated: [DATE] via @ai-docs update -->`.
+  7. **Report**: Output: "Updated X pages, skipped Y (manual edits), added Z new skills to index."
 
 ## MODE 4: AUDIT (`@ai-docs audit`)
 - **Trigger**: `@ai-docs audit` (or `@ai-docs audit --fix`, or `@ai-docs audit <skill-name>`).
 - **Objective**: Evaluate documentation quality and compliance with the Global Standards.
-- **Output**: Generates `DOCS_AUDIT_REPORT.md` in the project root.
+- **Output**: Generates `/docs/audit/DOCS_AUDIT_REPORT.md`.
 - **Audit Checklist**:
   - **Critical (🔴)**:
     - `.agents/skills/<name>/SKILL.md` without a corresponding `/docs/skills/<name>.md` page.
@@ -137,6 +142,7 @@ Stage all changes and create a conventional commit.
     - Code blocks without specified language.
     - Missing sections (Description, Usage, Configuration) in a skill page.
     - Paragraphs exceeding 5 lines.
+    - Skill names in `/docs/README.md` index table are not clickable links.
   - **Suggestions (🔵)**:
     - Missing color alerts (`> [!NOTE]`, `> [!WARNING]`).
     - Missing cross-links between related pages.
