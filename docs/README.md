@@ -11,13 +11,16 @@ Welcome to the myAI-Skills documentation.
 | [ai-log-generate](skills/ai-log-generate.md) | `@ai-log` | Log every AI interaction |
 | [central-skills-hub-builder](skills/central-skills-hub-builder.md) | — | Build skills hub repo from scratch |
 
-## More Docs
+## Guides
 
-- [Usage Guide](usage.md)
-- [Creating Skills](creating-skills.md)
-- [Conventions](conventions.md)
-- [Architecture](ARCHITECTURE.md)
+- [Usage Guide](guides/usage.md) — how to consume skills from external projects
+- [Creating Skills](guides/creating-skills.md) — how to create new skills
+
+## Reference
+
+- [Conventions](reference/conventions.md) — coding standards and technology choices
+- [Architecture](reference/ARCHITECTURE.md) — ADRs, complexity analysis, edge cases
 
 ---
 
-**[⬆ Back to Top](#)**
+**[⬆ Back to Top](#)** | **[📂 Root README](/README.md)**

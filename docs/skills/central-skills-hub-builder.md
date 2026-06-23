@@ -20,7 +20,7 @@ When creating a new skill, follow the structure and rules defined in `.agents/sk
 - TypeScript by default, Python for data skills
 
 > [!TIP]
-> See [creating-skills.md](../creating-skills.md) for the step-by-step guide on building new skills.
+> See [creating-skills.md](../guides/creating-skills.md) for the step-by-step guide on building new skills.
 
 ---
 

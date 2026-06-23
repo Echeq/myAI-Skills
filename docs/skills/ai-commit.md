@@ -28,7 +28,7 @@ No parameters. Uses the repo's `.gitignore` for exclusions.
 > Root `package-lock.json` and `.opencode/plans/` are excluded if present.
 
 > [!TIP]
-> See the [Conventions](../conventions.md) doc for commit type standards.
+> See the [Conventions](../reference/conventions.md) doc for commit type standards.
 
 ---
 
