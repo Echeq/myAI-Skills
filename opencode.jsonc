@@ -1,0 +1,39 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "orchestrator-scout": {
+      "description": "Fast subagent using a cheaper/lightweight model for bulk scans, audits, broad-coverage tasks, and repetitive analysis across many files.",
+      "mode": "subagent",
+      "model": "deepseek/deepseek-chat",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "bash": "allow",
+        "edit": "deny",
+        "write": "deny",
+        "webfetch": "deny",
+        "skill": "deny",
+        "todowrite": "deny"
+      }
+    },
+    "orchestrator-deep": {
+      "description": "Powerful subagent using a capable reasoning model for complex bugs, architectural refactors, deep debugging, and difficult functions.",
+      "mode": "subagent",
+      "model": "deepseek/deepseek-reasoner",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "bash": "allow",
+        "edit": "allow",
+        "write": "allow",
+        "webfetch": "allow",
+        "skill": "allow",
+        "todowrite": "allow"
+      }
+    }
+  }
+}

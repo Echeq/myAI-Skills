@@ -11,6 +11,7 @@ Browse the available skills below, or read the [Skill Index](docs/README.md) for
 | [ai-commit](docs/skills/ai-commit.md) | `@ai-commit` | Stage all changes and create a conventional commit |
 | [ai-docs](docs/skills/ai-docs.md) | `@ai-docs` | Doc generation, update, and audit |
 | [ai-log-generate](docs/skills/ai-log-generate.md) | `@ai-log` | Log every AI interaction |
+| [ai-orchestrator](docs/skills/ai-orchestrator.md) | `@ai-orchestrator` | Intelligent task router with 4-tier auto-pipeline |
 | [central-skills-hub-builder](docs/skills/central-skills-hub-builder.md) | — | Build skills hub repo from scratch |
 | [auto-report](docs/skills/auto-report.md) | `@auto-report` | Interactive report generator with figure/table placeholders |
 | [ai-audit](docs/skills/ai-audit.md) | `@ai-audit` | Code quality auditor with health scoring |
