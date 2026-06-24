@@ -9,7 +9,7 @@ Welcome to the myAI-Skills documentation.
 | [ai-commit](skills/ai-commit.md) | `@ai-commit` | Stage all changes and create a conventional commit |
 | [ai-docs](skills/ai-docs.md) | `@ai-docs` | Doc generation, update, and audit |
 | [ai-log-generate](skills/ai-log-generate.md) | `@ai-log` | Log every AI interaction |
-| [ai-orchestrator](skills/ai-orchestrator.md) | `@ai-orchestrator` | Intelligent task router with 4-tier auto-pipeline |
+| [ai-orchestrator](skills/ai-orchestrator.md) | `@ai-orchestrator` | Intelligent task router with auto-pipeline, memory, planning, scoring, suggestions |
 | [central-skills-hub-builder](skills/central-skills-hub-builder.md) | — | Build skills hub repo from scratch |
 | [auto-report](skills/auto-report.md) | `@auto-report` | Interactive report generator with figure/table placeholders |
 | [ai-audit](skills/ai-audit.md) | `@ai-audit` | Code quality auditor with health scoring |

@@ -28,6 +28,9 @@ When creating a new skill, follow the structure and rules defined in `.agents/sk
 - SemVer starting at `1.0.0`
 - TypeScript by default, Python for data skills
 
+> [!NOTE]
+> This skill has no trigger command — it is loaded automatically when the agent detects a skill-building task.
+
 > [!TIP]
 > See [creating-skills.md](../guides/creating-skills.md) for the step-by-step guide on building new skills.
 

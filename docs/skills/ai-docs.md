@@ -43,6 +43,7 @@ Use `<!-- MANUAL -->` comments in doc pages to preserve custom edits on update.
 > Standard mode regenerates ALL skill pages. Manual edits are overwritten unless protected with `<!-- MANUAL -->`.
 > Audit compliance scoring: Critical 40%, Warnings 30%, Suggestions 30%. PASS if ≥ 80%.
 
----
+> [!TIP]
+> Use `@ai-orchestrator --plan` before writing docs to get a structured outline first.
 
 **[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**

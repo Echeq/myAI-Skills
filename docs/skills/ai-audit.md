@@ -35,6 +35,7 @@ Output: `/docs/ai-audit/AUDIT_REPORT_{DATE}.md`. Adapts checks to detected langu
 > [!NOTE]
 > This is a pattern-based static analysis skill. It reads files directly — no external tools needed. It does not execute code.
 
----
+> [!TIP]
+> Run `@ai-orchestrator --suggestion` first to identify which areas need auditing most.
 
 **[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**

@@ -31,6 +31,7 @@ No parameters required. Output auto-generated to:
 > [!NOTE]
 > Logs are stored locally in `docs/log/` and are not committed by default. Add `docs/log/` to `.gitignore` if needed.
 
----
+> [!TIP]
+> Use `@ai-commit` before `@ai-log` to ensure your changes are staged first.
 
 **[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
