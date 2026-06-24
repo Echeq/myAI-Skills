@@ -182,6 +182,12 @@ opencode.jsonc
 
 Memory and plan directories are auto-created on first use. No additional configuration needed.
 
+> [!NOTE]
+> The orchestrator never scans file contents for suggestions — it only reads memory files and directory listings.
+
+> [!TIP]
+> Combine with `--quick --force-quality` for cheap execution with verified output.
+
 ---
 
 ## File Map

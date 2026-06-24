@@ -33,7 +33,8 @@ Output: `/docs/auto-report/REPORT_{subject}_{date}.md`. Templates read from `.ag
 > [!NOTE]
 > Language is selected during the interactive session: English, Chinese, or Bilingual. Figure/table placeholders adapt their format accordingly.
 
----
+> [!TIP]
+> Use `@ai-orchestrator --plan` before generating a report to plan the structure first.
 
 ## File Map
 
