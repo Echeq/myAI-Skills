@@ -42,7 +42,7 @@ Interactive report builder that asks step-by-step for format, language, subject,
 Output: `/docs/auto-report/edited_{template}_{date}.{ext}`. Templates read from `.agents/skills/auto-report/templates/<name>/template.md`. Session data persisted to `/docs/auto-report/.config.md`. Dependencies checked at generation time via bash.
 
 > [!NOTE]
-> Native Markdown generation requires no external tools. Other formats require `pandoc`. If missing, the skill prints the exact conversion command so you can run it manually.
+> Native Markdown generation requires no external tools. Other formats require `pandoc`. If missing, the skill generates a `.flag` file with the OS-specific install command (`winget`, `choco`, `brew`, or `apt`).
 
 > [!WARNING]
 > PDF generation requires `pandoc` + a pdf-engine (weasyprint, wkhtmltopdf, or xelatex). If only pandoc is found, the skill warns and offers .md.
@@ -64,6 +64,7 @@ docs/auto-report/                     ← Generated output
   README.md                          ← Output index
   .config.md                         ← Session history & defaults
   edited_{template}_{date}.{ext}     ← Generated reports (format varies)
+  install_{tool}.flag                ← Dependency installers (created on demand)
 
 docs/skills/auto-report.md            ← This documentation page
 ```
@@ -132,8 +133,9 @@ docs/skills/auto-report.md            ← This documentation page
 | Chinese characters in filenames | Transcribes subject to pinyin |
 | `.config.md` corruption | Regenerates from defaults |
 | Very long user input | Truncated, warns user |
-| pandoc not installed | Warns, generates .md, prints conversion command |
-| pandoc found but pdf-engine missing | Generates .md, suggests installing weasyprint/wkhtmltopdf |
+| pandoc not installed | Generates .md + writes `install_pandoc.flag` with OS-specific command |
+| pandoc found but pdf-engine missing | Generates .md + writes `install_pdf-engine.flag` |
+| Flag file already exists | Overwrites with latest command (stale flags are harmless) |
 
 ---
 

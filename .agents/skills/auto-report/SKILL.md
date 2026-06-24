@@ -28,7 +28,8 @@ Interactive report builder. Ask ONE question at a time. Fill a template, check d
 /docs/auto-report/
 ├── .config.md                    Session history + defaults
 ├── README.md                     Report index
-└── edited_{template}_{date}.{ext}  Generated reports
+├── edited_{template}_{date}.{ext}  Generated reports
+└── install_{tool}.flag           Dependency installers (created on demand)
 ```
 
 ### Supported formats
@@ -63,7 +64,23 @@ pandoc --version | grep pdf
 ```
 
 **If all dependencies found**: Proceed with conversion after generating .md.
-**If missing**: "Required tool not found (pandoc). Generating in Markdown instead. To convert manually: `pandoc edited_default.md -o edited_default.docx`"
+
+**If missing**:
+1. Generate `.md` version as fallback.
+2. Write a `.flag` file to `/docs/auto-report/install_{tool}.flag` containing the install command for the current OS.
+3. Report to user:
+   > "⚠️ `pandoc` not found. Generated `.md` fallback. Flag file created: `docs/auto-report/install_pandoc.flag`. Run it to install."
+
+### Flag files
+
+Created when a required dependency is missing. Saved alongside reports. Run them to install.
+
+| File | Content (Windows) | Content (Linux/Mac) |
+|---|---|---|
+| `install_pandoc.flag` | `winget install pandoc` or `choco install pandoc` | `brew install pandoc` or `sudo apt install pandoc` |
+| `install_pdf-engine.flag` | `pip install weasyprint` | `brew install weasyprint` or `sudo apt install weasyprint` |
+
+Flag files are plain text — review before running on your system.
 
 ## Generation Flow (6 steps)
 
@@ -117,5 +134,5 @@ Language adapts label: English → "Figure/Table", Chinese → "图/表".
 | No templates found | Use built-in academic template (Abstract, Introduction, Body, Conclusion, References) |
 | User cancels mid-flow | Save partial session to `.config.md`, exit |
 | Output dir missing | Create `/docs/auto-report/` |
-| Dependency not found | Generate .md, print conversion command for user |
+| Dependency not found | Generate .md + write `install_{tool}.flag` with OS-specific install command |
 | Format unsupported | Fall back to .md |
