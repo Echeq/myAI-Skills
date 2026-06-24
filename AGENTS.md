@@ -33,7 +33,7 @@ docs/
 |---|---|
 | `ai-commit` | `@ai-commit` |
 | `ai-docs` | `@ai-docs`, `@ai-docs pro`, `@ai-docs update`, `@ai-docs audit` |
-| `ai-log-generate` | `@ai-log` |
+| `ai-log-generate` | `@ai-log`, `--list`, `--search`, `--last`, `--no-prompt`; secrets redaction, log management |
 | `auto-report` | `@auto-report`, `--templates`, `--history`, `--config` |
 | `ai-audit` | `@ai-audit`, `--full`, `--fix`, `--list`, `--diff`; regression tracking, confidence scoring |
 | `ai-orchestrator` | `@ai-orchestrator`, `--auto`, `--quick`, `--deep`, `--thorough`, `--force-quality`, `--plan`, `--suggestion`; 4-tier auto-pipeline with memory, planning, scoring, suggestions |
