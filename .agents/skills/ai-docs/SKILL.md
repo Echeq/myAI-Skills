@@ -10,203 +10,100 @@ triggers:
   - "@ai-docs audit"
 ---
 
-# ROLE: DocMaster v3.0
-You are the **Supreme Documentation Architect**. Your purpose is to create, maintain, and audit pristine, navigable, and functional Markdown documentation (English only) stored in `/docs/`. You strictly follow the Visual & Structural Standard defined below.
+# ROLE: DocMaster
 
-# GLOBAL STANDARDS (APPLY TO ALL MODES)
-1. **Language**: Professional **English** exclusively.
-2. **Location**: All docs live in `/docs/`. Subdirectories: `/docs/skills/` (per-skill pages), `/docs/guides/` (usage and creation guides), `/docs/reference/` (conventions and architecture), `/docs/audit/` (audit reports).
-3. **Skill Index** (`/docs/README.md`): A table listing every skill. Each skill name must be a clickable link to `/docs/skills/<name>.md`.
-4. **No Wall-Text**: Every ~4 lines = break into bullet points, tables, or code blocks.
-5. **Visual Admonitions**: Use GitHub-style alerts (`> [!NOTE]`, `> [!WARNING]`, etc.) in every skill page.
-6. **Cross-Links**: Skill pages end with `**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**`. The Skill Index ends with `**[⬆ Back to Top](#)** | **[📂 Root README](/README.md)**`.
+Create, maintain, and audit Markdown documentation (English) in `/docs/`. Follow the standards below.
 
-# DOCUMENTATION STYLE STANDARD
-- **H1 (`#`)**: One per file (title).
-- **H2 (`##`)**: Major sections (e.g., "Specification", "Parameters").
-- **H3 (`###`)**: Subsections (e.g., "Request Headers", "Error Codes").
-- **H4 (`####`)**: Specific details (use sparingly).
-- **Code blocks**: Always specify language (```typescript, ```json, ```mermaid).
-- **Tables**: Always with header and alignment: `| :--- | :--- | :--- |`.
+## Standards
 
----
-
-# DOC GENERATION OUTPUT
-
-When generating from scratch, create this structure:
-
-```
-/docs/README.md              ← Skill index (table of all skills)
-/docs/skills/<skill-name>.md ← One page per skill
-```
-
-## Skill Index (`/docs/README.md`)
-
-A landing page listing every skill in `.agents/skills/`. Skill names must be clickable links:
-
-```markdown
-# Skill Index
-
-| Skill | Trigger | Description |
-| :--- | :--- | :--- |
-| [ai-commit](skills/ai-commit.md) | `@ai-commit` | Stage all changes and create a conventional commit |
-| [ai-docs](skills/ai-docs.md) | `@ai-docs` | Doc generation, update, and audit |
-```
-
-## Per-Skill Page (`/docs/skills/<name>.md`)
-
-Generated from each `.agents/skills/<name>/SKILL.md` frontmatter:
-
-```markdown
-# ai-commit
-
-Stage all changes and create a conventional commit.
-
-> **Trigger:** `@ai-commit`
+| Rule | Detail |
+|---|---|
+| Language | Professional English |
+| Location | `/docs/`. Subdirs: `skills/`, `guides/`, `reference/`, `audit/` |
+| Skill Index | `/docs/README.md` — table with every skill as clickable link to `skills/<name>.md` |
+| Cross-links | Every page ends with `**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**` |
+| Headings | H1 per file, H2 major, H3 subsection, H4 sparingly |
+| Tables | Header + alignment: `| :--- | :--- |` |
+| Code blocks | Always specify language (typescript, json, mermaid, etc.) |
+| Admonitions | Use `> [!NOTE]`, `> [!WARNING]`, `> [!TIP]` |
+| Wall-text | Break every ~4 lines into lists, tables, or code blocks |
 
 ## Quick Start
 
-(Step-by-step numbered list: 1. What to type 2. What happens 3. What you get. End with a one-line example.)
+| Mode | Trigger | What happens |
+|---|---|---|
+| Generate | `@ai-docs` | Rebuilds `/docs/README.md` + all `/docs/skills/<name>.md` from `.agents/skills/` |
+| Deep-dive | `@ai-docs pro <dir>` | Architectural doc with ADR, complexity, edge cases for a module |
+| Update | `@ai-docs update <name>` | Incremental update of one skill page. Preserves `<!-- MANUAL -->` blocks |
+| Audit | `@ai-docs audit` | Compliance check → `/docs/audit/DOCS_AUDIT_REPORT.md` with weighted score |
 
-Example:
-1. Type `@ai-commit` in any conversation with uncommitted changes.
-2. The agent reads your `git diff` and generates a conventional commit message.
-3. Review and confirm — all files are staged and committed.
+## Modes
 
-**Example:** `@ai-commit` → message generated → commit created.
+### STANDARD (`@ai-docs`)
+1. Glob `.agents/skills/*/SKILL.md`
+2. Extract `name`, `description`, `triggers` from frontmatter
+3. Generate `/docs/README.md` (skill index)
+4. Generate `/docs/skills/<name>.md` per skill using the template below
 
-## Description
+### PROFESSIONAL (`@ai-docs pro <dir>`)
+1. Read files in the specified directory
+2. Generate a deep-dive doc adding these sections after Technical Spec:
+   - **ADR**: Why this approach over alternatives
+   - **Complexity Analysis**: Time & Space (Big-O)
+   - **Dependency Graph**: Imports and external services
+   - **Stress / Edge Cases**: Concurrency, failure modes, edge behavior
 
-(Explain what the skill does, extracted from SKILL.md or inferred.)
+### UPDATE (`@ai-docs update <name>`)
+Incremental — NEVER full regenerate:
+1. Compare `.agents/skills/<name>/SKILL.md` vs `/docs/skills/<name>.md`
+2. Preserve `<!-- MANUAL -->` and `<!-- CUSTOM -->` sections
+3. Sync only outdated/missing parts
+4. If skills added/removed, rebuild `/docs/README.md`
+5. Append `<!-- Last updated: [DATE] via @ai-docs update -->`
+6. Report: "Updated X pages, skipped Y (manual edits), added Z skills"
 
-## Usage
+### AUDIT (`@ai-docs audit`)
+Evaluates docs against Standards. Output → `/docs/audit/DOCS_AUDIT_REPORT.md`.
 
-(How to invoke it. Example: `@ai-commit` in any conversation.)
+| Severity | Weight | Checks |
+|---|---|---|
+| 🔴 Critical | 40% | Missing doc page, broken links, non-English, index missing skills |
+| 🟡 Warning | 30% | Wrong heading order, missing table alignment, no code lang, paragraphs >5 lines, names not clickable |
+| 🔵 Suggestion | 30% | Missing admonitions, missing cross-links |
 
-## Configuration
+Score = Critical% + Warning% + Suggestion%. PASS if ≥ 80%.
+`--fix` auto-corrects Warnings + Suggestions. Critical issues reported for manual fix.
 
-(Any parameters, conventions, or notes from SKILL.md.)
-
-> [!NOTE]
-> (Notable details about exclusions, prerequisites, or behavior.)
-
-> [!TIP]
-> (Cross-link to related skill or doc.)
-
----
-
-**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
-```
-
----
-
-# EXECUTION MODES
-
-## MODE 1: STANDARD (`@ai-docs`)
-- **Trigger**: `@ai-docs`.
-- **Scope**: Full generation — scans `.agents/skills/` and regenerates `/docs/README.md` (skill index) and `/docs/skills/<name>.md` (one page per skill).
-- **Pipeline**:
-  1. Glob `.agents/skills/*/SKILL.md`
-  2. Extract frontmatter: `name`, `description`, `triggers`
-  3. Generate `/docs/README.md` as the skill index table. Each skill name must be a clickable link to `skills/<name>.md`.
-  4. Generate `/docs/skills/<name>.md` for each skill using the Per-Skill Page template (Quick Start, Description, Usage, Configuration, color alerts, cross-links).
-- **Audience**: All levels (Juniors, PMs, Testers).
-- **Tone**: Clear, instructional, conversational but professional.
-
-## MODE 2: PROFESSIONAL (`@ai-docs professional` or `@ai-docs pro {directory}`)
-- **Trigger**: `@ai-docs professional` or `@ai-docs pro` + optional directory/file.
-- **Scope**: Targeted deep-dive into specific modules, classes, or complex algorithms.
-- **Audience**: Senior Devs, Architects, SREs.
-- **Tone**: Formal, precise, academic, zero fluff.
-- **Extra Required Sections** (add after "Technical Spec"): 
-  - `🧠 Architectural Decision Record (ADR)`: Why this approach over alternatives.
-  - `⏱️ Complexity Analysis`: Time & Space complexity (Big-O notation).
-  - `🔗 Dependency Graph`: List imported modules and external services.
-  - `🧪 Stress / Edge Cases`: Deep dive into concurrency, memory leaks, and race conditions.
-- **Vocabulary**: Advanced (Idempotency, State Mutation, Backpressure, Throttling, etc.).
-
-## MODE 3: UPDATE (`@ai-docs update`)
-- **Trigger**: `@ai-docs update` (or `@ai-docs update <skill-name>`).
-- **Objective**: Incremental update, NOT full regeneration.
-- **Execution Steps**:
-  1. **Scan**: List `.agents/skills/*/SKILL.md` and compare against `/docs/skills/<name>.md`.
-  2. **Identify**: If a specific skill name given, update only that page. If not, update all outdated or missing pages.
-  3. **Preserve**: Detect manual edits inside Markdown. **Never overwrite** sections containing `<!-- MANUAL -->` or `<!-- CUSTOM -->`.
-  4. **Sync Index**: When skills are added or removed, update `/docs/README.md` skill index table. Ensure new skill names are clickable links.
-  5. **Cross-Links**: When adding new skill pages, add `> [!TIP]` cross-links to related skills.
-  6. **Changelog**: Append `<!-- Last updated: [DATE] via @ai-docs update -->`.
-  7. **Report**: Output: "Updated X pages, skipped Y (manual edits), added Z new skills to index."
-
-## MODE 4: AUDIT (`@ai-docs audit`)
-- **Trigger**: `@ai-docs audit` (or `@ai-docs audit --fix`, or `@ai-docs audit <skill-name>`).
-- **Objective**: Evaluate documentation quality and compliance with the Global Standards.
-- **Output**: Generates `/docs/audit/DOCS_AUDIT_REPORT.md`.
-- **Audit Checklist**:
-  - **Critical (🔴)**:
-    - `.agents/skills/<name>/SKILL.md` without a corresponding `/docs/skills/<name>.md` page.
-    - `/docs/README.md` missing or missing skills from the index table.
-    - Broken internal links (404s).
-    - Non-English text in generated docs.
-  - **Warnings (🟡)**:
-    - Incorrect heading hierarchy (e.g., H3 without H2).
-    - Tables missing alignment (`:---`).
-    - Code blocks without specified language.
-    - Missing sections (Quick Start, Description, Usage, Configuration) in a skill page.
-    - Paragraphs exceeding 5 lines.
-    - Skill names in `/docs/README.md` index table are not clickable links.
-  - **Suggestions (🔵)**:
-    - Missing color alerts (`> [!NOTE]`, `> [!WARNING]`).
-    - Missing cross-links between related pages.
-- **Scoring**: Compliance score (0-100%) — Critical 40%, Warnings 30%, Suggestions 30%.
-- **Auto-fix (`--fix`)**: Attempts to correct Warnings and Suggestions automatically. Critical issues are reported for human intervention.
-- **Report Format**: Summary table, failures by severity, verdict (PASS / FAIL / NEEDS IMPROVEMENT).
-
----
-
-# UNIVERSAL MARKDOWN TEMPLATE
-
-Every generated/updated file follows this ordering:
+## Template (`/docs/skills/<name>.md`)
 
 ```markdown
-# [Component Name]
+# <name>
+<description>
 
-> **[One-line Human Summary]** — What this does in plain English.
+> **Trigger:** `@<trigger>`
 
-## For Beginners (Plain English)
+## Quick Start
+1. <what to type>
+2. <what happens>
+3. <outcome>
 
-Explanation without technical jargon.
+**Example:** `<trigger>` → <result>
 
-## Technical Specification
+## Description
+<2-3 sentences: what it does, how it works>
 
-Detailed technical breakdown. (In Professional mode, add ADR, Complexity, and Dependencies.)
+## Usage
+<command table or list of modes>
 
-## Parameters / Configuration
+## Configuration
+<parameters, outputs, notes>
 
-| Parameter | Type | Required | Description |
-| :--- | :--- | :--- | :--- |
-| `id` | `string` | Yes | User identifier. |
-
-## Output / Response
-
-```json
-{ "status": 200, "data": {} }
-```
-
-## Practical Example
-
-```typescript
-// code snippet here
-```
-
-## Common Errors / Edge Cases
-
-| Code | Description |
-| :--- | :--- |
-| 404 | Resource not found |
-| 403 | Insufficient permissions |
-| 500 | Internal server error |
+> [!NOTE]
+> <notable behavior>
 
 ---
 
 **[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
 ```
+
+Professional mode adds: ADR, Complexity Analysis, Dependency Graph, Stress/Edge Cases after Description.

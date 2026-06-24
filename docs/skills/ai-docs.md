@@ -2,38 +2,46 @@
 
 Generates, updates, and audits Markdown documentation in `/docs/`.
 
-> **Trigger:** `@ai-docs` | `@ai-docs pro` | `@ai-docs professional` | `@ai-docs update` | `@ai-docs audit`
+> **Trigger:** `@ai-docs` | `@ai-docs pro` | `@ai-docs update` | `@ai-docs audit`
 
 ## Quick Start
 
-1. Type `@ai-docs` to regenerate the skill index and all per-skill documentation pages.
-2. The agent scans `.agents/skills/`, extracts metadata, and rebuilds `/docs/README.md` + `/docs/skills/<name>.md`.
-3. Use `@ai-docs audit` to check compliance. Use `@ai-docs update` for incremental changes.
+| Mode | Trigger | What happens |
+| :--- | :--- | :--- |
+| Generate | `@ai-docs` | Rebuilds skill index + all per-skill pages from `.agents/skills/` |
+| Deep-dive | `@ai-docs pro src/` | Architectural doc with ADR, complexity, edge cases |
+| Update | `@ai-docs update ai-commit` | Incremental update of one skill page (preserves manual edits) |
+| Audit | `@ai-docs audit` | Compliance check with weighted score, saved to `/docs/audit/` |
 
-**Example:** `@ai-docs` → all docs regenerated. `@ai-docs audit` → gets a score report.
+**Example:** `@ai-docs` → all docs regenerated in ~10s. `@ai-docs audit` → score report generated.
 
 ## Description
 
-Documentation lifecycle agent with 4 modes: standard (full regeneration), professional (deep-dive with ADR), update (incremental), and audit (compliance check).
+Documentation lifecycle agent with 4 modes: full generation, professional deep-dive, incremental update, and compliance audit. Operates entirely in `/docs/`. Reads skill definitions from `.agents/skills/<name>/SKILL.md`.
 
 ## Usage
 
-| Mode | Trigger |
-| :--- | :--- |
-| Standard | `@ai-docs` |
-| Professional | `@ai-docs pro <target>` |
-| Update | `@ai-docs update <skill-name>` |
-| Audit | `@ai-docs audit` |
+| Mode | Trigger | Output |
+| :--- | :--- | :--- |
+| Standard | `@ai-docs` | `/docs/README.md` + `/docs/skills/<name>.md` |
+| Professional | `@ai-docs pro <dir>` | Single deep-dive `.md` with ADR, complexity, deps, edge cases |
+| Update | `@ai-docs update <name>` | Updated `/docs/skills/<name>.md` |
+| Audit | `@ai-docs audit` | `/docs/audit/DOCS_AUDIT_REPORT.md` (score 0-100%) |
 
 ## Configuration
 
-All docs live in `/docs/`. Generated output: skill index at `/docs/README.md` and per-skill pages at `/docs/skills/<name>.md`.
+| Path | Purpose |
+| :--- | :--- |
+| `.agents/skills/<name>/SKILL.md` | Source of truth — frontmatter drives doc generation |
+| `/docs/README.md` | Skill index (auto-generated) |
+| `/docs/skills/<name>.md` | Per-skill doc pages (auto-generated) |
+| `/docs/audit/` | Audit reports |
 
-> [!WARNING]
-> This skill regenerates `/docs/skills/` pages. Manual edits to those files may be overwritten. Use `<!-- MANUAL -->` comments to preserve custom content.
+Use `<!-- MANUAL -->` comments in doc pages to preserve custom edits on update.
 
-> [!TIP]
-> See [central-skills-hub-builder](central-skills-hub-builder.md) for the architecture rules that skills should follow.
+> [!NOTE]
+> Standard mode regenerates ALL skill pages. Manual edits are overwritten unless protected with `<!-- MANUAL -->`.
+> Audit compliance scoring: Critical 40%, Warnings 30%, Suggestions 30%. PASS if ≥ 80%.
 
 ---
 
