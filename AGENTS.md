@@ -1,6 +1,6 @@
 # myAI-Skills
 
-OpenCode skill packages — 7 prose-only `.md` agents with no executables, deps,
+OpenCode skill packages — 8 prose-only `.md` agents with no executables, deps,
 tests, or CI. No `package.json`, no build system.
 Repo-local OpenCode config: `opencode.jsonc` (2 model-aware subagents for orchestrator).
 
@@ -37,6 +37,7 @@ docs/
 | `auto-report` | `@auto-report`, `--templates`, `--history`, `--config` |
 | `ai-audit` | `@ai-audit`, `--full`, `--fix`, `--list`, `--diff`; regression tracking, confidence scoring |
 | `ai-orchestrator` | `@ai-orchestrator`, `--auto`, `--quick`, `--deep`, `--thorough`, `--force-quality`, `--plan`, `--suggestion`; 4-tier auto-pipeline with memory, planning, scoring, suggestions |
+| `ai-release` | `@ai-release`, `--changelog`, `--bump`, `--release`, `--tag`; changelog, versioning, git tags, GitHub releases |
 | `central-skills-hub-builder` | No trigger — architect for building new skills |
 
 ## Conventions (aspirational, not yet enforced)
