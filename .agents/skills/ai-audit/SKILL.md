@@ -1,124 +1,80 @@
 ---
 name: ai-audit
-description: Lightweight interactive code quality auditor. Scans files for security, performance, maintainability, best practices, and documentation issues.
+description: Lightweight interactive code quality auditor. Scans files for security, performance, maintainability, best practices, and documentation issues with regression tracking and confidence scoring.
 allowed-tools: Read, Glob, Grep, Bash, Write
 triggers:
   - "@ai-audit"
-  - "@ai-audit --security"
-  - "@ai-audit --performance"
   - "@ai-audit --full"
   - "@ai-audit --fix"
   - "@ai-audit --list"
+  - "@ai-audit --diff"
 ---
 
 # ROLE: Code Auditor
 
-You audit codebases interactively by reading files and detecting patterns. Output: `/docs/ai-audit/AUDIT_REPORT_{DATE}.md`. ALWAYS ask before scanning. NEVER assume project scope or structure.
+Read files, detect patterns, score quality. Output to `/docs/ai-audit/AUDIT_REPORT_{DATE}.md`. ALWAYS ask before scanning.
 
-## Categories & Weights
+## Quick Start
 
-| Category | Weight | Checks |
-| :--- | :--- | :--- |
-| Security | 35% | Hardcoded secrets, SQL injection patterns, XSS vectors, weak auth, outdated deps |
-| Performance | 20% | N+1 queries, sync blocking calls, large loops, missing caching, memory leaks |
-| Maintainability | 20% | Cyclomatic complexity, code duplication, file >500 lines, function >50 lines |
-| Best Practices | 15% | Missing types, side effects, god objects, inconsistent naming |
-| Documentation | 10% | Missing function/class docs, stale README, no inline comments |
+| Mode | Trigger | What happens |
+|---|---|---|
+| Interactive | `@ai-audit` | 6-step interview: scope → depth → categories → scan → findings → report |
+| Full | `@ai-audit --full` | Deep scan all categories, no questions, with regression check |
+| Fix | `@ai-audit --fix` | Auto-fix High + Critical findings from last report |
+| Diff | `@ai-audit --diff` | Compare last 2 reports, show what changed (new/fixed/regressed) |
+| List | `@ai-audit --list` | Show past audits with date, score, grade |
 
-## Severity
+## Categories & Scoring
 
-| Level | Label | Score | Meaning |
-| :--- | :--- | :--- | :--- |
-| 10 | 🔴 Critical | 10 | Fix immediately — security risk or crash |
-| 5 | 🟠 High | 5 | Fix soon — major bug or tech debt |
-| 2 | 🟡 Medium | 2 | Consider — improvement opportunity |
-| 1 | 🔵 Low | 1 | Optional — nit or style |
+| Category | Weight | Checks | Severity levels |
+|---|---|---|---|
+| Security | 35% | Secrets, injections, weak auth, outdated deps, exposed config | 🔴 Critical 10 / 🟠 High 5 / 🟡 Medium 2 / 🔵 Low 1 |
+| Performance | 20% | N+1 queries, sync I/O in async, missing cache, large loops | Same scale |
+| Maintainability | 20% | Cyclo complexity >10, duplication, file >500 lines, func >50 | Same scale |
+| Best Practices | 15% | Missing types, side effects, god objects, naming | Same scale |
+| Documentation | 10% | Missing docs, stale README, no inline comments | Same scale |
 
-## Health Score Formula
+Score = Security×.35 + Perf×.20 + Maint×.20 + BestP×.15 + Docs×.10. Grade: A ≥ 90, B ≥ 70, C ≥ 50, D < 50.
 
-```
-Score = Security×0.35 + Performance×0.20 + Maintainability×0.20 + BestPractices×0.15 + Documentation×0.10
-```
+## Regression Tracking
 
-Each category scored 0–100. Then:
+After each audit, saves last score + finding count to `.agents/memory/ai-audit/last-audit.json`. On next audit:
+- **Improved**: "Up from 72 B to 85 B 🟢 — 2 Critical issues fixed"
+- **Regressed**: "Down from 85 B to 72 B 🔴 — 3 new Critical issues"
+- **First audit**: "Baseline established"
 
-| Range | Grade |
-| :--- | :--- |
-| 90–100 | 🟢 A |
-| 70–89 | 🟡 B |
-| 50–69 | 🟠 C |
-| 0–49 | 🔴 D |
+## Modes
 
-## Output Structure
+### INTERACTIVE (`@ai-audit`)
+1. **Scope** — "Whole repo or a specific directory?"
+2. **Depth** — "Quick (grep patterns) or deep (read every file)?"
+3. **Categories** — "All, Security only, Security+Perf, or Custom"
+4. **Language** — Auto-detect (.ts, .js, .py, .md). Confirm.
+5. **Scan** — Progress: "Scanning X files..." Run regression check.
+6. **Findings** — Group by severity → report → `/docs/ai-audit/`.
 
-```
-docs/ai-audit/
-├── README.md                        Report index
-└── AUDIT_REPORT_{DATE}.md           Audit reports
-```
+### FULL (`@ai-audit --full`)
+All categories, deep scan (read every file), no questions. Includes regression check. Uses defaults.
 
----
+### FIX (`@ai-audit --fix`)
+Read latest report. Auto-fix 🔴 Critical + 🟠 High findings. Respects `<!-- MANUAL -->`. Skip findings you're unsure about.
 
-# EXECUTION MODES
+### DIFF (`@ai-audit --diff`)
+Read last 2 reports. Show: new issues, fixed issues, score change. Table format:
 
-## MODE 1: INTERACTIVE (`@ai-audit`)
+| Metric | Last | Current | Δ |
+|---|---|---|---|
+| Score | 72 B | 85 B | +13 🟢 |
+| Critical | 3 | 1 | -2 🟢 |
 
-Step-by-step interview. Never ask more than 1 question at a time.
+### LIST (`@ai-audit --list`)
+Read `/docs/ai-audit/AUDIT_REPORT_*.md` files, display table of date + score + grade.
 
-1. **Scope** — "Audit the whole repo or a specific directory?"
-2. **Depth** — "Quick scan or deep analysis? (Quick: grep patterns. Deep: read every file.)"
-3. **Categories** — "Which categories? 1) All 2) Security only 3) Security + Performance 4) Custom"
-4. **Language** — Auto-detect (`.ts`, `.js`, `.py`, `.md`). Confirm with user.
-5. **Scan** — Run the scan. Report progress: "Scanning X files..."
-6. **Findings** — Present top findings grouped by severity and category.
-7. **Report** — Generate `/docs/ai-audit/AUDIT_REPORT_{DATE}.md`.
+## Notes
 
-## MODE 2: SECURITY ONLY (`@ai-audit --security`)
+- Quick mode uses grep patterns. Deep mode reads every file.
+- Language adaptation: TS/JS → `eval`, `process.env`, `innerHTML`; Python → `exec`, `pickle`, `shell=True`; Markdown → broken links, stale refs.
+- No scan? → "No files found." Permissions issue? → skip file, note. Binary? → skip. Cancelled? → save partial.
 
-Targeted security scan. Check for:
-- Hardcoded passwords, tokens, API keys
-- SQL string concatenation
-- Unsanitized user input
-- Weak hash algorithms (MD5, SHA1)
-- Outdated dependency versions
-
-## MODE 3: PERFORMANCE (`@ai-audit --performance`)
-
-Targeted performance scan. Check for:
-- Nested loops on large datasets
-- Synchronous I/O in async contexts
-- Missing caching layers
-- Large bundle/dependency sizes
-
-## MODE 4: FULL (`@ai-audit --full`)
-
-All categories, deep scan (read every file). No questions asked. Uses defaults.
-
-## MODE 5: FIX (`@ai-audit --fix`)
-
-Read the latest audit report and attempt to fix all 🟠 High and 🔴 Critical findings automatically. Skip findings marked `<!-- MANUAL -->`.
-
-## MODE 6: LIST (`@ai-audit --list`)
-
-List all audit reports in `/docs/ai-audit/` with date and grade.
-
----
-
-# SUBJECT ADAPTATION
-
-| Language | Check For |
-| :--- | :--- |
-| TypeScript / JavaScript | `eval()`, `innerHTML`, `process.env` secrets, `require` of user input, missing `use strict` |
-| Python | `exec()`, `pickle.loads()`, `subprocess` shell=True, hardcoded passwords in config files |
-| Markdown / Docs | Broken links, missing sections, non-English text, stale references |
-
----
-
-# ERROR HANDLING
-
-| Issue | Action |
-| :--- | :--- |
-| No files to scan | Report "No source files found" and exit |
-| Permission denied on file | Skip file, note in report |
-| Binary file detected | Skip, note |
-| User cancels | Save partial scan results |
+> [!IMPORTANT]
+> Findings have confidence levels based on detection method: pattern match (70%), file read confirmed (85%), cross-referenced (95%). Low-confidence findings are labeled `[unverified]`.

@@ -2,6 +2,7 @@
 
 OpenCode skill packages — 7 prose-only `.md` agents with no executables, deps,
 tests, or CI. No `package.json`, no build system.
+Repo-local OpenCode config: `opencode.jsonc` (2 model-aware subagents for orchestrator).
 
 All skills are plain YAML-frontmatter instruction files (`.agents/skills/<name>/SKILL.md`).
 The `src/`, `tests/`, `package.json` structure in `docs/guides/creating-skills.md` is
@@ -23,6 +24,7 @@ docs/
   audit/                          @ai-docs audit reports
   auto-report/                    @auto-report generated reports
   ai-audit/                       @ai-audit audit reports
+  log/                            @ai-log generated logs
 ```
 
 ## Skills & Triggers
@@ -33,7 +35,7 @@ docs/
 | `ai-docs` | `@ai-docs`, `@ai-docs pro`, `@ai-docs update`, `@ai-docs audit` |
 | `ai-log-generate` | `@ai-log` |
 | `auto-report` | `@auto-report`, `--templates`, `--history`, `--config` |
-| `ai-audit` | `@ai-audit`, `--security`, `--performance`, `--full`, `--fix`, `--list` |
+| `ai-audit` | `@ai-audit`, `--full`, `--fix`, `--list`, `--diff`; regression tracking, confidence scoring |
 | `ai-orchestrator` | `@ai-orchestrator`, `--auto`, `--quick`, `--deep`, `--thorough`, `--force-quality`, `--plan`, `--suggestion`; 4-tier auto-pipeline with memory, planning, scoring, suggestions |
 | `central-skills-hub-builder` | No trigger — architect for building new skills |
 
@@ -53,6 +55,7 @@ docs/
 - `docs/audit/DOCS_AUDIT_REPORT.md` — `@ai-docs audit`
 - `.agents/memory/orchestrator/` — `@ai-orchestrator` session memory (gitignored)
 - `.agents/plan/` — `@ai-orchestrator` generated plans (gitignored)
+- `.agents/memory/ai-audit/` — `@ai-audit` regression tracking (gitignored)
 
 ## Notes
 
