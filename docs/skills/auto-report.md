@@ -12,11 +12,13 @@ Interactive report generator with multi-format export, dependency detection, and
 4. Skill checks dependencies for your chosen format. If missing, falls back to Markdown.
 5. Report saved as `edited_{template}_{date}.{ext}`.
 
-**Example:** `@auto-report` → .docx → English → "Process Scheduling" → OS → Group of 3 → confirm sections → pandoc found → saved as `edited_default_2026-06-24.docx`.
+**Example (standard):** `@auto-report` → .docx → English → CS → "Process Scheduling" → Group of 3 → confirm sections → pandoc found → saved as `edited_default_2026-06-24.docx`.
+
+**Example (Chinese University):** `@auto-report` → .pdf → Chinese → Chinese University → "操作系统分析" → "Peking University" → "CS-301" → Group of 3 → generated with GB/T 7714-2015 formatting.
 
 ## Description
 
-Interactive report builder that asks step-by-step for format, language, subject, title, authors, sections, and content. Fills a Markdown template, checks export dependencies (pandoc for docx/pdf/html/tex), and outputs to `edited_{template}_{date}.{ext}`. Supports figure/table placeholder auto-numbering per section.
+Interactive report builder that asks step-by-step for format, language, subject, title, authors, sections, and content. Fills a Markdown template (standard academic or Chinese university GB/T 7714-2015), checks export dependencies (pandoc for docx/pdf/html/tex), and outputs to `edited_{template}_{date}.{ext}`. Supports figure/table placeholder auto-numbering per section.
 
 ## Usage
 
@@ -49,6 +51,24 @@ Output: `/docs/auto-report/edited_{template}_{date}.{ext}`. Templates read from 
 
 > [!TIP]
 > Use `@ai-orchestrator --plan` before generating a report to plan the structure first.
+
+## Chinese University Format (GB/T 7714-2015)
+
+When the subject is "Chinese University", the report follows national academic formatting standards:
+
+| Element | Standard |
+| :--- | :--- |
+| Body font | SimSun (宋体) 12pt (小四) |
+| Title | 22pt (二号) bold, centered |
+| H1 | 16pt (三号) bold |
+| H2 | 14pt (四号) bold |
+| Body | SimSun 12pt, 1.5x line spacing, 2em first-line indent |
+| Margins | L: 3cm, R: 2.5cm, T/B: 2.5cm |
+| Header | Course name (left) / University (right) |
+| Footer | Centered page number |
+| English/nums | Times New Roman |
+
+The template includes pandoc YAML frontmatter for proper CJK rendering. PDF output requires `xelatex` or `ctex` LaTeX distribution.
 
 ## File Map
 
