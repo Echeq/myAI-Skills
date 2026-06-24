@@ -1,21 +1,22 @@
 # auto-report
 
-Interactive report generator with figure/table placeholder auto-numbering.
+Interactive report generator with multi-format export, dependency detection, and figure/table auto-numbering.
 
 > **Trigger:** `@auto-report` | `@auto-report --templates` | `@auto-report --history` | `@auto-report --config`
 
 ## Quick Start
 
 1. Type `@auto-report` to start the interactive wizard.
-2. Answer 6 questions: language → title → subject → authors → sections → content.
-3. Add figures and tables — the skill auto-numbers them (`Figure 1.1`, `Table 2.1`).
-4. Review the preview. Confirm. Report saved to `docs/auto-report/`.
+2. Answer 6 questions: format → language → subject → title → authors → sections → content.
+3. Add figures and tables — auto-numbered per section.
+4. Skill checks dependencies for your chosen format. If missing, falls back to Markdown.
+5. Report saved as `edited_{template}_{date}.{ext}`.
 
-**Example:** `@auto-report` → English → "Process Scheduling" → OS → Group of 3 → confirm sections → add 2 figures → preview → saved.
+**Example:** `@auto-report` → .docx → English → "Process Scheduling" → OS → Group of 3 → confirm sections → pandoc found → saved as `edited_default_2026-06-24.docx`.
 
 ## Description
 
-Interactive report builder that asks the user step-by-step for language, subject, title, authors, sections, and content. Fills a Markdown template and outputs a complete report. Supports figure and table placeholder auto-numbering per section.
+Interactive report builder that asks step-by-step for format, language, subject, title, authors, sections, and content. Fills a Markdown template, checks export dependencies (pandoc for docx/pdf/html/tex), and outputs to `edited_{template}_{date}.{ext}`. Supports figure/table placeholder auto-numbering per section.
 
 ## Usage
 
@@ -26,12 +27,25 @@ Interactive report builder that asks the user step-by-step for language, subject
 | `@auto-report --history` | Show past reports |
 | `@auto-report --config` | View/edit settings |
 
+### Supported formats
+
+| Format | Extension | Dependency | Fallback |
+| :--- | :--- | :--- | :--- |
+| Markdown | `.md` | None | — |
+| Word | `.docx` | `pandoc` | Warn + offer .md |
+| PDF | `.pdf` | `pandoc` + pdf-engine | Warn + offer .md |
+| HTML | `.html` | `pandoc` | Warn + offer .md |
+| LaTeX | `.tex` | `pandoc` | Warn + offer .md |
+
 ## Configuration
 
-Output: `/docs/auto-report/REPORT_{subject}_{date}.md`. Templates read from `.agents/skills/auto-report/templates/`. Session data persisted to `/docs/auto-report/.config.md`.
+Output: `/docs/auto-report/edited_{template}_{date}.{ext}`. Templates read from `.agents/skills/auto-report/templates/<name>/template.md`. Session data persisted to `/docs/auto-report/.config.md`. Dependencies checked at generation time via bash.
 
 > [!NOTE]
-> Language is selected during the interactive session: English, Chinese, or Bilingual. Figure/table placeholders adapt their format accordingly.
+> Native Markdown generation requires no external tools. Other formats require `pandoc`. If missing, the skill prints the exact conversion command so you can run it manually.
+
+> [!WARNING]
+> PDF generation requires `pandoc` + a pdf-engine (weasyprint, wkhtmltopdf, or xelatex). If only pandoc is found, the skill warns and offers .md.
 
 > [!TIP]
 > Use `@ai-orchestrator --plan` before generating a report to plan the structure first.
@@ -46,25 +60,25 @@ Output: `/docs/auto-report/REPORT_{subject}_{date}.md`. Templates read from `.ag
     default/
       template.md                    ← Built-in academic template
 
-docs/auto-report/                     ← Generated output (created on first use)
+docs/auto-report/                     ← Generated output
   README.md                          ← Output index
   .config.md                         ← Session history & defaults
-  REPORT_{subject}_{date}.md         ← Generated reports
+  edited_{template}_{date}.{ext}     ← Generated reports (format varies)
 
 docs/skills/auto-report.md            ← This documentation page
 ```
 
 ---
 
-## ADR-001: Markdown-Only Template Engine
+## ADR-001: Template Engine + Format Detection
 
-**Status:** Adopted
+**Status:** Adopted 2026-06-24
 
-**Context:** OpenCode agents operate in a text-only environment. Claims of DOCX, PDF, or LaTeX processing are non-executable.
+**Context:** Users requested Word/PDF/HTML export. Direct generation requires runtime tools not guaranteed in OpenCode sessions.
 
-**Decision:** Restrict template processing to Markdown (`.md`). Templates use `{{KEY}}` placeholder syntax replaced via string interpolation. No external tools required.
+**Decision:** Always generate Markdown first (guaranteed). Then check for `pandoc` at generation time via bash. If found, convert. If not, print the exact pandoc command for manual use. This keeps the skill self-contained while supporting multi-format when tools exist.
 
-**Alternatives rejected:** Pandoc conversion, python-docx, LaTeX compilation — all require runtime environments not guaranteed in OpenCode sessions.
+**Alternatives rejected:** Bundling pandoc, python-docx scripts — adds dependencies that may not be available.
 
 ---
 
@@ -74,25 +88,22 @@ docs/skills/auto-report.md            ← This documentation page
 
 **Context:** Academic reports require numbered figures (`Figure 1.1`) and tables (`Table 2.3`). The skill must insert these without the user manually tracking numbering.
 
-**Decision:** Auto-number per-section. Section 1 = `1.1, 1.2, …`. Section 2 = `2.1, 2.2, …`. User provides name/description; skill assigns number and inserts bold placeholder.
-
-**Format by language:**
-| Language | Figure | Table |
-| :--- | :--- | :--- |
-| English | `**Figure 1.1 — Description**` | `**Table 1.1 — Description**` |
-| Chinese | `**图 1.1 — Description**` | `**表 1.1 — Description**` |
+**Decision:** Auto-number per-section. Section 1 = `1.1, 1.2, …`. Section 2 = `2.1, 2.2, …`. Language adapts: English → "Figure/Table", Chinese → "图/表".
 
 ---
 
 ## Complexity Analysis
 
 **Generation pipeline (per session):**
-1. Template scan: O(t) — list t template folders
-2. Interactive Q&A: O(s × q) — s sections × q questions per section, bounded by ~20 interactions
-3. Placeholder replacement: O(p) — p placeholders in template
-4. Write output: O(1) — single file write
+1. Format selection: O(1)
+2. Dependency check: O(1) bash call
+3. Template scan: O(t)
+4. Interactive Q&A: O(s × q), bounded ~20 interactions
+5. Placeholder replacement: O(p)
+6. Write output: O(1)
+7. Conversion (if tools found): O(1) bash call
 
-**Overall:** Linear in user input, no loops or recursion.
+**Overall:** Linear. No loops or recursion.
 
 ---
 
@@ -102,11 +113,12 @@ docs/skills/auto-report.md            ← This documentation page
 @auto-report
   ├── Reads  → .agents/skills/auto-report/templates/<name>/template.md
   ├── Reads  → docs/auto-report/.config.md (if exists)
-  ├── Writes → docs/auto-report/REPORT_{subject}_{date}.md
+  ├── Checks → pandoc --version (bash, for non-.md formats)
+  ├── Writes → docs/auto-report/edited_{template}_{date}.{ext}
   └── Writes → docs/auto-report/.config.md
 ```
 
-**External dependencies:** None. Self-contained within the repo.
+**External dependencies:** `pandoc` optional (for docx/pdf/html/tex export). Core functionality is self-contained.
 
 ---
 
@@ -114,12 +126,14 @@ docs/skills/auto-report.md            ← This documentation page
 
 | Case | Handling |
 | :--- | :--- |
-| Zero templates exist | Falls back to built-in academic template (Abstract, Introduction, Body, Conclusion, References) |
-| User cancels mid-flow | Partial session saved to `.config.md`; prompt to resume |
-| Same filename collision | Appends `-2`, `-3` suffix to avoid overwrite |
-| Chinese characters in filenames | Transcribes subject to pinyin for safe filenames |
-| `.config.md` corruption | Regenerates from defaults if unreadable |
-| Very long user input | Truncated to reasonable paragraph size; warns user |
+| No templates found | Falls back to built-in academic template |
+| User cancels mid-flow | Partial session saved to `.config.md` |
+| Same filename collision | Appends `-2`, `-3` suffix |
+| Chinese characters in filenames | Transcribes subject to pinyin |
+| `.config.md` corruption | Regenerates from defaults |
+| Very long user input | Truncated, warns user |
+| pandoc not installed | Warns, generates .md, prints conversion command |
+| pandoc found but pdf-engine missing | Generates .md, suggests installing weasyprint/wkhtmltopdf |
 
 ---
 
