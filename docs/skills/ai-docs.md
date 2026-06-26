@@ -1,23 +1,25 @@
 # ai-docs
 
-Generates, updates, and audits Markdown documentation in `/docs/`.
+Generates, updates, and audits Markdown documentation in `/docs/`. Also
+handles AI interaction logs via the `--log` sub-module.
 
-> **Trigger:** `@ai-docs` | `@ai-docs pro` | `@ai-docs update` | `@ai-docs audit`
+> **Trigger:** `@ai-docs` | `@ai-docs pro` | `@ai-docs update` | `@ai-docs audit` | `@ai-docs --log`
 
 ## Quick Start
 
 | Mode | Trigger | What happens |
 | :--- | :--- | :--- |
 | Generate | `@ai-docs` | Rebuilds skill index + all per-skill pages from `.agents/skills/` |
-| Deep-dive | `@ai-docs pro src/` | Architectural doc with ADR, complexity, edge cases |
-| Update | `@ai-docs update ai-commit` | Incremental update of one skill page (preserves manual edits) |
+| Deep-dive | `@ai-docs pro <dir>` | Architectural doc with ADR, complexity, edge cases |
+| Update | `@ai-docs update <name>` | Incremental update of one skill page (preserves manual edits) |
 | Audit | `@ai-docs audit` | Compliance check with weighted score, saved to `/docs/audit/` |
+| Log | `@ai-docs --log` | Log AI interaction to `docs/log/AI-LOG-*.md` |
 
 **Example:** `@ai-docs` → all docs regenerated in ~10s. `@ai-docs audit` → score report generated.
 
 ## Description
 
-Documentation lifecycle agent with 4 modes: full generation, professional deep-dive, incremental update, and compliance audit. Operates entirely in `/docs/`. Reads skill definitions from `.agents/skills/<name>/SKILL.md`.
+Documentation lifecycle agent with 5 modes: full generation, professional deep-dive, incremental update, compliance audit, and AI interaction logging. Operates entirely in `/docs/`. Reads skill definitions from `.agents/skills/<name>/SKILL.md`.
 
 ## Usage
 
@@ -27,6 +29,7 @@ Documentation lifecycle agent with 4 modes: full generation, professional deep-d
 | Professional | `@ai-docs pro <dir>` | Single deep-dive `.md` with ADR, complexity, deps, edge cases |
 | Update | `@ai-docs update <name>` | Updated `/docs/skills/<name>.md` |
 | Audit | `@ai-docs audit` | `/docs/audit/DOCS_AUDIT_REPORT.md` (score 0-100%) |
+| Log | `@ai-docs --log` | `docs/log/AI-LOG-{date}-{time}-{pc}.md` |
 
 ## Configuration
 

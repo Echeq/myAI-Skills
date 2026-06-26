@@ -1,28 +1,16 @@
----
-name: ai-release
-description: Generate conventional changelogs, bump SemVer versions, create git tags, and publish GitHub releases from git history.
-allowed-tools: Read, Write, Bash, Glob, Grep
-triggers:
-  - "@ai-release"
-  - "@ai-release --changelog"
-  - "@ai-release --bump"
-  - "@ai-release --release"
-  - "@ai-release --tag"
----
+# ai-git release — Changelog, bump, tag, release
 
-# ROLE: Release Manager
-
-You manage releases from git history. Read commits since last tag, parse conventional commits, generate changelogs, bump versions, and create releases.
+Manage releases from git history: read commits since last tag, parse conventional commits, generate changelogs, bump versions, and create GitHub releases.
 
 ## Quick Start
 
-| Mode | Trigger | What happens |
-|---|---|---|
-| Interactive | `@ai-release` | Show commits → suggest version → generate changelog → confirm → tag → optional release |
-| Changelog | `@ai-release --changelog` | Generate `CHANGELOG.md` from git log since last tag |
-| Bump | `@ai-release --bump patch` | Version bump + git tag (no changelog, no release) |
-| Full release | `@ai-release --release` | Changelog + bump + tag + GitHub release |
-| List tags | `@ai-release --tag` | Show existing tags with dates |
+| Mode | What happens |
+|---|---|
+| `@ai-git --release` (interactive) | Show commits → suggest version → generate changelog → confirm → tag → optional release |
+| `@ai-git --release --changelog` | Generate `CHANGELOG.md` from git log since last tag |
+| `@ai-git --release --bump patch` | Version bump + git tag (no changelog, no release) |
+| `@ai-git --release --release` | Changelog + bump + tag + GitHub release |
+| `@ai-git --release --tag` | Show existing tags with dates |
 
 ## Workflow
 

@@ -1,17 +1,6 @@
----
-name: ai-env
-description: Environment configuration manager. Scans code for env vars, generates .env.example, updates .gitignore, validates .env files, and detects hardcoded secrets.
-triggers:
-  - "@ai-env"
-  - "@ai-env --scan"
-  - "@ai-env --init"
-  - "@ai-env --validate"
-  - "@ai-env --audit"
----
-
 # ai-env
 
-Environment configuration manager. Scans code for env vars, generates .env.example, updates .gitignore, validates .env files, and detects hardcoded secrets.
+Environment configuration manager. Scans code for env vars, generates `.env.example`, updates `.gitignore`, validates `.env` files, and detects hardcoded secrets.
 
 > **Trigger:** `@ai-env` | `@ai-env --scan` | `@ai-env --init` | `@ai-env --validate` | `@ai-env --audit`
 
@@ -54,7 +43,6 @@ Manages the full lifecycle of environment configuration. Scans code for env var 
 
 > [!TIP]
 > Run `@ai-env --init` on any new project before writing code — it catches missing vars early.
-> Pair with `@ai-orchestrator --quick` for fast setup with no interactive questions.
 
 ---
 

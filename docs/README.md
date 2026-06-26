@@ -6,15 +6,13 @@ Welcome to the myAI-Skills documentation.
 
 | Skill | Trigger | Description |
 | :--- | :--- | :--- |
-| [ai-commit](skills/ai-commit.md) | `@ai-commit` | Stage all changes and create a conventional commit |
-| [ai-docs](skills/ai-docs.md) | `@ai-docs` | Doc generation, update, and audit |
-| [ai-log-generate](skills/ai-log-generate.md) | `@ai-log` | Log every AI interaction |
+| [ai-docs](skills/ai-docs.md) | `@ai-docs` | Doc generation, update, audit, and AI interaction logging |
+| [ai-env](skills/ai-env.md) | `@ai-env` | Environment config manager, `.env.example` generation, secret auditing |
+| [ai-git](skills/ai-git.md) | `@ai-git` | Git/GitHub skill hub with sub-modules: commit, release, branch, PR |
 | [ai-orchestrator](skills/ai-orchestrator.md) | `@ai-orchestrator` | Intelligent task router with auto-pipeline, memory, planning, scoring, suggestions |
-| [ai-release](skills/ai-release.md) | `@ai-release` | Changelog generation, SemVer bump, git tagging, and GitHub releases |
-| [ai-env](skills/ai-env.md) | `@ai-env` | Environment config manager, .env.example generation, secret auditing |
-| [central-skills-hub-builder](skills/central-skills-hub-builder.md) | — | Build skills hub repo from scratch |
 | [auto-report](skills/auto-report.md) | `@auto-report` | Interactive report generator with figure/table placeholders |
 | [ai-audit](skills/ai-audit.md) | `@ai-audit` | Code quality auditor with health scoring |
+| [central-skills-hub-builder](skills/central-skills-hub-builder.md) | — | Build skills hub repo from scratch |
 
 ## Guides
 

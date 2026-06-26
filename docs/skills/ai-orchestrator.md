@@ -2,7 +2,7 @@
 
 Intelligent task router with 4-tier auto-pipeline. Routes work through Flash (cheap) and Deep Reasoner (powerful) subagents based on complexity. Includes memory system, adaptive planning, hybrid confidence scoring, time estimation, token-aware degradation, and history-based suggestion mode.
 
-> **Trigger:** `@ai-orchestrator` | `@ai-orchestrator --auto` | `@ai-orchestrator --quick` | `@ai-orchestrator --deep` | `@ai-orchestrator --thorough` | `@ai-orchestrator --force-quality` | `@ai-orchestrator --plan` | `@ai-orchestrator --suggestion` | `@ai-orchestrator --suggestion --quick` | `@ai-orchestrator --suggestion --deep`
+> **Trigger:** `@ai-orchestrator` | `@ai-orchestrator --auto` | `@ai-orchestrator --quick` | `@ai-orchestrator --deep` | `@ai-orchestrator --thorough` | `@ai-orchestrator --force-quality` | `@ai-orchestrator --suggestion` | `@ai-orchestrator --suggestion --quick` | `@ai-orchestrator --suggestion --deep`
 
 ## Quick Start
 
@@ -17,10 +17,6 @@ Intelligent task router with 4-tier auto-pipeline. Routes work through Flash (ch
 - `@ai-orchestrator --thorough migrate auth to JWT` &rarr; forces VERY COMPLEX (3-step pipeline).
 - `@ai-orchestrator --force-quality add a button` &rarr; SIMPLE classification but full scoring (git + static + patterns).
 - `@ai-orchestrator --quick --force-quality add a button` &rarr; SIMPLE pipeline + full scoring (barato pero verificado).
-
-**Plan only:**
-1. Type `@ai-orchestrator --plan redesign scheduling system`.
-2. The orchestrator generates a detailed plan and saves it to `.agents/plan/`. No code is executed.
 
 **Interactive (no task given):**
 1. Type `@ai-orchestrator`.

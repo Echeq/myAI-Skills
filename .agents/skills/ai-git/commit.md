@@ -1,7 +1,4 @@
----
-name: ai-commit
-description: Stage all changes and create a conventional commit. Triggers on "@ai-commit".
----
+# ai-git commit — Stage and commit
 
 ## Workflow
 

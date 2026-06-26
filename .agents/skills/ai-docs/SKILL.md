@@ -1,6 +1,8 @@
 ---
 name: ai-docs
-description: Generates, updates, and audits Markdown documentation in /docs/.
+description: >-
+  Generates, updates, and audits Markdown documentation in /docs/. Also
+  handles AI interaction logs via the `--log` sub-module.
 allowed-tools: Read, Write, Bash, Glob, Grep
 triggers:
   - "@ai-docs"
@@ -8,6 +10,12 @@ triggers:
   - "@ai-docs professional"
   - "@ai-docs update"
   - "@ai-docs audit"
+  - "@ai-docs --log"
+  - "@ai-docs --log --list"
+  - "@ai-docs --log --search"
+  - "@ai-docs --log --last"
+  - "@ai-docs --log --no-prompt"
+  - "@ai-docs --log --compact"
 ---
 
 # ROLE: DocMaster
@@ -31,11 +39,23 @@ Create, maintain, and audit Markdown documentation (English) in `/docs/`. Follow
 ## Quick Start
 
 | Mode | Trigger | What happens |
-|---|---|---|
+|---|---|---|---|
 | Generate | `@ai-docs` | Rebuilds `/docs/README.md` + all `/docs/skills/<name>.md` from `.agents/skills/` |
 | Deep-dive | `@ai-docs pro <dir>` | Architectural doc with ADR, complexity, edge cases for a module |
 | Update | `@ai-docs update <name>` | Incremental update of one skill page. Preserves `<!-- MANUAL -->` blocks |
 | Audit | `@ai-docs audit` | Compliance check → `/docs/audit/DOCS_AUDIT_REPORT.md` with weighted score |
+| Log | `@ai-docs --log` | Log AI interaction (reads `log.md` sub-module from this directory) |
+
+## Sub-modules
+
+This skill loads sub-module files from its own directory by flag:
+
+| Flag | File loaded |
+|---|---|
+| `--log` | `log.md` |
+
+When a flag is used, read the corresponding `.md` file and execute its
+instructions directly. Each file is self-contained with no frontmatter.
 
 ## Modes
 

@@ -13,7 +13,6 @@ triggers:
   - "@ai-orchestrator --deep"
   - "@ai-orchestrator --thorough"
   - "@ai-orchestrator --force-quality"
-  - "@ai-orchestrator --plan"
   - "@ai-orchestrator --suggestion"
   - "@ai-orchestrator --suggestion --quick"
   - "@ai-orchestrator --suggestion --deep"
@@ -62,22 +61,91 @@ Pass each subagent's output as context to the next.
 | `--deep` | COMPLEX |
 | `--thorough` | VERY COMPLEX |
 | `--force-quality` | Full scoring on any tier. Composable with `--quick` |
-| `--plan` | Generate plan only, no execution |
 | `--suggestion` | Suggestion mode (see below) |
 
 ## Quick Reference
 
-### Memory System
+### Memory System (`.md` files, auto-created)
 
-Pre-flight: Read `.agents/memory/orchestrator/context.json` (last 5 tasks) and `token-usage.json`. If <30% budget left, warn and offer `--quick`.
-Post-flight: Append task summary to context.json (keep 5), update token-usage.json, append to decisions.log.
+Memory files live in `.agents/memory/orchestrator/` and are **auto-created** if
+missing. The plan files in `.agents/plan/` are the primary memory record; this
+system is a lightweight index + token tracker.
 
-### Planning Phase
+**Files:**
 
-Before executing, generate a plan. Depth by tier: SIMPLE = inline (no file), MEDIUM+ = save to `.agents/plan/`.
-- MEDIUM: "Plan saved. Review? (y/N)" — default no
-- COMPLEX: "Review? (Y/n)" — default yes
-- VERY COMPLEX: "Please review before I execute"
+| File | Purpose |
+|---|---|
+| `.agents/memory/orchestrator/index.md` | Last 5 task summaries (headings + plan path links) |
+| `.agents/memory/orchestrator/tokens.md` | Daily token usage log |
+
+**Pre-flight:**
+1. If `index.md` missing → create with `# Orchestrator Memory` header (empty)
+2. If `tokens.md` missing → create with `# Token Usage` header (empty)
+3. Read `index.md` → last 5 tasks available as context
+4. Read `tokens.md` → if today's usage > 70% of daily budget, warn "Low budget, consider --quick"
+
+**Post-flight:**
+1. Prepend a new entry to `index.md` (keep last 5 total):
+   ```markdown
+   ## {YYYY-MM-DD HH:mm} — {brief task summary}
+   Tier: {tier} | Plan: `.agents/plan/{path}.md`
+   ```
+2. Append to `tokens.md`:
+   ```markdown
+   - {YYYY-MM-DD HH:mm}: +{estimated_tokens} tokens (total: {running_total})
+   ```
+
+### Plan file — always written, never deleted
+
+For every task (unless `--quick`), write a plan `.md` **before** executing.
+Plans accumulate in subdirectories grouped by date — never delete old ones.
+They serve as a persistent record and can be read back as context in future
+sessions, saving tokens and reducing hallucinations.
+
+Directory structure:
+```
+.agents/plan/{YYYY}_{MMDD}/plan_{YYYYMMDD}_{HHmmss}.md
+```
+
+Examples:
+- `.agents/plan/2026_0626/plan_20260626_143000.md`
+- `.agents/plan/2026_0627/plan_20260627_091500.md`
+
+Content structure:
+```markdown
+---
+task: "<user's task description>"
+tier: SIMPLE | MEDIUM | COMPLEX | VERY COMPLEX
+created: 2026-06-26T14:30:00
+status: pending | completed
+inputs: { files_read: ["..."], commands_run: ["..."] }
+outputs: { files_written: ["..."], commands_run: ["..."] }
+---
+
+## Objective
+
+...
+
+## Steps
+
+1. ...
+2. ...
+
+## Result summary
+
+...
+```
+
+Usage:
+1. **Write** the plan `.md` before execution. Offer review per tier:
+   - MEDIUM: "Plan saved to `{path}`. Review? (y/N)" — default no
+   - COMPLEX: "Plan saved to `{path}`. Review? (Y/n)" — default yes
+   - VERY COMPLEX: "Plan saved to `{path}`. Please review before I execute"
+2. **Execute** — instruct subagents to read the plan `.md` as context.
+   This saves tokens (plan is not regenerated per step) and reduces
+   hallucinations (subagents follow concrete written steps).
+3. **After execution** — update `status: completed` + populate `outputs`
+   fields with what was actually done.
 
 ### Hybrid Confidence Scoring
 
@@ -103,22 +171,23 @@ If user has <30% tokens or says they're low, offer to downgrade: VERY COMPLEX �
 
 ### Suggestion Mode (`--suggestion`)
 
-Read context.json + decisions.log + token-usage.json + `ls` repo structure. Generate categorized suggestions (High/Medium/Low). No file content scanning. No pipeline execution.
+Read `index.md` + `tokens.md` + list recent plan files (last 5) + `ls` repo structure. Generate categorized suggestions (High/Medium/Low). No file content scanning. No pipeline execution.
 
 ## Workflow
 
 ### Direct (`@ai-orchestrator <task>` or with flags)
 1. Classify or use flag → confirm briefly ("Routing as [tier]. OK?")
 2. Pre-flight memory check
-3. Generate plan (offer review per tier rules)
+3. Write plan `.md` (skip if `--quick`)
 4. Show time estimate
-5. Execute pipeline via `task()` calls
-6. Run confidence scoring
-7. Present result with score
-8. Post-flight memory update
+5. Execute pipeline via `task()` calls (pass plan file path as context)
+6. Update plan `status: completed` + populate `outputs`
+7. Run confidence scoring
+8. Present result with score (include plan file path)
+9. Post-flight memory update
 
 ### Interactive (`@ai-orchestrator` alone)
-Ask one question at a time: what task → classify → confirm → execute (same 8 steps).
+Ask one question at a time: what task → classify → confirm → execute (same 9 steps).
 
 ### Auto (`@ai-orchestrator --auto <task>`)
 Same as Direct without confirmation. Full delegation.
@@ -130,6 +199,7 @@ Same as Direct without confirmation. Full delegation.
 **Task**: <description>
 **Time**: <actual> (estimated <est>)
 **Confidence**: <score>/100 <icon>
+**Plan**: .agents/plan/2026_0626/plan_20260626_143000.md
 
 <step results>
 
@@ -140,7 +210,7 @@ Same as Direct without confirmation. Full delegation.
 
 - Missing subagent → do work directly, suggest fixing `opencode.jsonc`
 - Pipeline step fails → report partial, offer retry/skip
-- Memory files missing → skip silently
+- Memory files missing → auto-create them (see Memory System — files are never missing after first run)
 - Token check uncertain → skip warning
 - Healing loop fails → deliver with ❌
-- Suggestion + --plan → invalid combo, use --suggestion only
+- Plan write fails → auto-create `.agents/plan/{YYYY}_{MMDD}/` and retry. If still fails, fall back to inline plan, warn user.

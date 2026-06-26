@@ -8,30 +8,30 @@ Browse the available skills below, or read the [Skill Index](docs/README.md) for
 
 | Skill | Trigger | Description |
 |-------|---------|-------------|
-| [ai-commit](docs/skills/ai-commit.md) | `@ai-commit` | Stage all changes and create a conventional commit |
-| [ai-docs](docs/skills/ai-docs.md) | `@ai-docs` | Doc generation, update, and audit |
-| [ai-log-generate](docs/skills/ai-log-generate.md) | `@ai-log` | Log every AI interaction |
+| [ai-docs](docs/skills/ai-docs.md) | `@ai-docs` | Doc generation, update, audit, and AI interaction logging |
+| [ai-env](docs/skills/ai-env.md) | `@ai-env` | Environment config manager, `.env.example` generation, secret auditing |
+| [ai-git](docs/skills/ai-git.md) | `@ai-git` | Git/GitHub skill hub with sub-modules: commit, release, branch, PR |
 | [ai-orchestrator](docs/skills/ai-orchestrator.md) | `@ai-orchestrator` | Intelligent task router with 4-tier auto-pipeline, memory system, adaptive planning, and hybrid confidence scoring |
-| [ai-release](docs/skills/ai-release.md) | `@ai-release` | Changelog generation, SemVer bump, git tagging, and GitHub releases |
-| [ai-env](docs/skills/ai-env.md) | `@ai-env` | Environment config manager, .env.example generation, secret auditing |
-| [central-skills-hub-builder](docs/skills/central-skills-hub-builder.md) | — | Build skills hub repo from scratch |
 | [auto-report](docs/skills/auto-report.md) | `@auto-report` | Interactive report generator with figure/table placeholders |
 | [ai-audit](docs/skills/ai-audit.md) | `@ai-audit` | Code quality auditor with health scoring |
+| [central-skills-hub-builder](docs/skills/central-skills-hub-builder.md) | — | Build skills hub repo from scratch |
 
 ## Repository Structure
 
 ```
 .agents/
-  memory/             Session memory & token tracking (gitignored)
-  plan/               Generated plans (gitignored)
+  memory/             Session memory & token tracking
+  plan/               Generated plans by date subdirectories
   skills/             OpenCode agent/skill definitions
     <name>/SKILL.md   Skill package (frontmatter + instructions)
+    ai-git/           Git/GitHub skill hub (router + sub-modules)
 docs/                 Documentation
   README.md           Skill index
   guides/             Usage and creation guides
   reference/          Conventions and architecture
   skills/             Per-skill documentation pages
   audit/              Audit reports
+  log/                AI interaction logs (gitignored)
 ```
 
 ## How It Works (ai-orchestrator)
