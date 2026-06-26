@@ -12,7 +12,6 @@ Welcome to the myAI-Skills documentation.
 | [ai-orchestrator](skills/ai-orchestrator.md) | `@ai-orchestrator` | Intelligent task router with auto-pipeline, memory, planning, scoring, suggestions |
 | [auto-report](skills/auto-report.md) | `@auto-report` | Interactive report generator with figure/table placeholders |
 | [ai-audit](skills/ai-audit.md) | `@ai-audit` | Code quality auditor with health scoring |
-| [central-skills-hub-builder](skills/central-skills-hub-builder.md) | — | Build skills hub repo from scratch |
 
 ## Guides
 

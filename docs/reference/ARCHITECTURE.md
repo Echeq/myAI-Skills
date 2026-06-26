@@ -6,7 +6,7 @@
 
 **Status:** Adopted 2026-06-23
 
-**Context:** The repo contains 4 OpenCode skills (plain `.md` files) with zero runtime code. Traditional doc generation from source (TSDocs, JSDoc) is inapplicable. Documentation must be authored manually but remain verifiable.
+**Context:** The repo contains 6 OpenCode skills (plain `.md` files) with zero runtime code. Traditional doc generation from source (TSDocs, JSDoc) is inapplicable. Documentation must be authored manually but remain verifiable.
 
 **Decision:** Implement a dual-layer documentation model:
 
@@ -82,10 +82,10 @@ The `ai-docs` skill implements a 4-mode deterministic state machine:
 ┌────────┴──────────────────────────────┴──────────┐
 │              .agents/skills/<name>/                │
 │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────┐ │
-│  │ ai-docs  │ │ ai-git   │ │central-  │ │...   │ │
-│  │ SKILL.md │ │ SKILL.md │ │hub-      │ │      │ │
-│  │          │ │ +commit  │ │builder   │ │      │ │
-│  │          │ │ +release │ │SKILL.md  │ │      │ │
+│  │ ai-docs  │ │ ai-git   │ │ ai-audit │ │...   │ │
+│  │ SKILL.md │ │ SKILL.md │ │ SKILL.md │ │      │ │
+│  │          │ │ +commit  │ │          │ │      │ │
+│  │          │ │ +release │ │          │ │      │ │
 │  │          │ │ +branch  │ │          │ │      │ │
 │  │          │ │ +pr      │ │          │ │      │ │
 │  └──────────┘ └──────────┘ └──────────┘ └──────┘ │
@@ -102,7 +102,7 @@ The `ai-docs` skill implements a 4-mode deterministic state machine:
 A skill's `SKILL.md` is updated but `docs/` is not. Mitigation: `@ai-docs audit` flags uncovered code (Critical). `@ai-docs update` reconciles timestamps.
 
 ### Zero-Code Skills
-All 4 current skills are prose-only `.md` files. The `src/`, `tests/`, `package.json` structure in `docs/README.md` is aspirational — no CI enforces it. Risk: new contributors may expect executable packages.
+All 6 current skills are prose-only `.md` files. The `src/`, `tests/`, `package.json` structure in `docs/README.md` is aspirational — no CI enforces it. Risk: new contributors may expect executable packages.
 
 ### Cross-Link Rot
 Hardcoded relative paths (`../.agents/skills/`). If the repo is consumed as a submodule, paths break. Current resolution: document path assumption in `docs/ARCHITECTURE.md`.

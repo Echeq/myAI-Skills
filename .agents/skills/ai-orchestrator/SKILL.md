@@ -79,10 +79,11 @@ system is a lightweight index + token tracker.
 | `.agents/memory/orchestrator/tokens.md` | Daily token usage log |
 
 **Pre-flight:**
-1. If `index.md` missing → create with `# Orchestrator Memory` header (empty)
-2. If `tokens.md` missing → create with `# Token Usage` header (empty)
-3. Read `index.md` → last 5 tasks available as context
-4. Read `tokens.md` → if today's usage > 70% of daily budget, warn "Low budget, consider --quick"
+1. Ensure `.agents/memory/orchestrator/` exists → create if missing
+2. If `index.md` missing → create with `# Orchestrator Memory` header (empty)
+3. If `tokens.md` missing → create with `# Token Usage` header (empty)
+4. Read `index.md` → last 5 tasks available as context
+5. Read `tokens.md` → if today's usage > 70% of daily budget, warn "Low budget, consider --quick"
 
 **Post-flight:**
 1. Prepend a new entry to `index.md` (keep last 5 total):
@@ -95,12 +96,30 @@ system is a lightweight index + token tracker.
    - {YYYY-MM-DD HH:mm}: +{estimated_tokens} tokens (total: {running_total})
    ```
 
-### Plan file — always written, never deleted
+### Scope Reflection (MEDIUM+ only)
+
+After classification but before writing the plan, take a brief **scope
+reflection** for MEDIUM, COMPLEX, and VERY COMPLEX tasks. This reduces
+hallucinations by catching blind spots early. SIMPLE and `--quick` skip it.
+
+Ask yourself these questions (write answers to the plan file's `## Reflection`):
+
+| Question | Why |
+|---|---|
+| What files/modules will this touch? | Prevents scope creep |
+| Is there a risk of breaking existing behavior? | Identifies need for rollback |
+| Does the user's request match the tier I picked? | Catches misclassification |
+| What could go wrong? | Edge cases to handle |
+| Do I need info from the user before proceeding? | Avoids assumptions |
+
+Write the reflection as a short bullet list. If risks are found, mention them
+in the confirmation message: "⚠️ Risk: this modifies X which affects Y."
 
 For every task (unless `--quick`), write a plan `.md` **before** executing.
-Plans accumulate in subdirectories grouped by date — never delete old ones.
-They serve as a persistent record and can be read back as context in future
-sessions, saving tokens and reducing hallucinations.
+First ensure `.agents/plan/{YYYY}_{MMDD}/` exists (create if missing), then
+write the file. Plans accumulate in subdirectories grouped by date — never
+delete old ones. They serve as a persistent record and can be read back as
+context in future sessions, saving tokens and reducing hallucinations.
 
 Directory structure:
 ```
@@ -125,6 +144,13 @@ outputs: { files_written: ["..."], commands_run: ["..."] }
 ## Objective
 
 ...
+
+## Reflection
+
+- Files touched: ...
+- Risks: ...
+- Misclassification risk: ...
+- Edge cases: ...
 
 ## Steps
 
@@ -178,16 +204,17 @@ Read `index.md` + `tokens.md` + list recent plan files (last 5) + `ls` repo stru
 ### Direct (`@ai-orchestrator <task>` or with flags)
 1. Classify or use flag → confirm briefly ("Routing as [tier]. OK?")
 2. Pre-flight memory check
-3. Write plan `.md` (skip if `--quick`)
-4. Show time estimate
-5. Execute pipeline via `task()` calls (pass plan file path as context)
-6. Update plan `status: completed` + populate `outputs`
-7. Run confidence scoring
-8. Present result with score (include plan file path)
-9. Post-flight memory update
+3. **Scope reflection** (MEDIUM+ only, skip if `--quick`)
+4. Write plan `.md` with reflection notes (skip if `--quick`)
+5. Show time estimate
+6. Execute pipeline via `task()` calls (pass plan file path as context)
+7. Update plan `status: completed` + populate `outputs`
+8. Run confidence scoring
+9. Present result with score (include plan file path)
+10. Post-flight memory update
 
 ### Interactive (`@ai-orchestrator` alone)
-Ask one question at a time: what task → classify → confirm → execute (same 9 steps).
+Ask one question at a time: what task → classify → confirm → execute (same 10 steps).
 
 ### Auto (`@ai-orchestrator --auto <task>`)
 Same as Direct without confirmation. Full delegation.

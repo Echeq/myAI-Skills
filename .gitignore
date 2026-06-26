@@ -4,6 +4,12 @@ AGENTS.md
 # Operational artifacts (logs, generated reports, session memory)
 docs/log/
 docs/ai-audit/
+docs/audit/
+docs/auto-report/
+
+# Session memory & plans (agent-generated)
+.agents/memory/
+.agents/plan/
 
 # Node modules (if any skill adds them in the future)
 node_modules/
