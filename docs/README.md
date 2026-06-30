@@ -6,13 +6,15 @@ Welcome to the myAI-Skills documentation.
 
 | Skill | Trigger | Description |
 | :--- | :--- | :--- |
+| [ai-audit](skills/ai-audit.md) | `@ai-audit` | Code quality auditor: security, performance, best practices |
+| [ai-config](skills/ai-config.md) | `@ai-config` | Config manager: validate opencode.jsonc, skills frontmatter, .gitignore |
+| [ai-diagram](skills/ai-diagram.md) | `@ai-diagram` | Diagram generator: flowcharts, sequence, class, Gantt, charts as Mermaid |
 | [ai-docs](skills/ai-docs.md) | `@ai-docs` | Doc generation, update, audit, and AI interaction logging |
-| [ai-env](skills/ai-env.md) | `@ai-env` | Environment config manager, `.env.example` generation, secret auditing |
-| [ai-git](skills/ai-git.md) | `@ai-git` | Git/GitHub skill hub with sub-modules: commit, release, branch, PR |
-| [ai-orchestrator](skills/ai-orchestrator.md) | `@ai-orchestrator` | Intelligent task router with auto-pipeline, memory, planning, scoring, suggestions |
-| [auto-report](skills/auto-report.md) | `@auto-report` | Interactive report generator with figure/table placeholders |
-| [ai-audit](skills/ai-audit.md) | `@ai-audit` | Code quality auditor with health scoring |
-| [ai-config](skills/ai-config.md) | `@ai-config` | Repo config manager: validate opencode.jsonc, skills frontmatter, .gitignore |
+| [ai-env](skills/ai-env.md) | `@ai-env` | Environment config: .env.example, secret auditing, gitignore |
+| [ai-git](skills/ai-git.md) | `@ai-git` | Git/GitHub hub: commit, release, branch, PR |
+| [ai-orchestrator](skills/ai-orchestrator.md) | `@ai-orchestrator` | Task router with 4-tier pipeline and mandatory plan files |
+| [auto-report](skills/auto-report.md) | `@auto-report` | Interactive report generator with multi-format export |
+| [skill-search](skills/skill-search.md) | `@skill-search` | Skill package manager: browse, install, update from GitHub |
 
 ## Guides
 
@@ -36,8 +38,17 @@ Three skills scan the repo, but each targets different things:
 
 **Example workflow:** New to a repo? `@ai-config --check` first (structure), then `@ai-env --scan` (env vars), then `@ai-audit` (code quality).
 
-<!-- Last updated: 2026-06-30 via @ai-docs update -->
+## Diagrams
+
+Generated diagrams are saved as Mermaid blocks in `/docs/diagrams/`. They render natively on GitHub.
+
+| Diagram | Source |
+|---------|--------|
+| [ai-diagram flow](diagrams/ai-diagram.md) | `@ai-diagram` self-diagram |
+| [orchestrator 4-tier pipeline](diagrams/orchestrator-pipeline.md) | `@ai-orchestrator` routing |
 
 ---
 
 **[⬆ Back to Top](#)** | **[📂 Root README](/README.md)**
+
+<!-- Generated via @ai-docs on 2026-06-30 -->
