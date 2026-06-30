@@ -6,11 +6,7 @@ Guide to creating a new skill in this repository.
 
 ```
 .agents/skills/<skill-name>/
-├── SKILL.md          # Metadata: name, description, allowed tools
-├── src/index.ts      # Main code (or .py for Python)
-├── tests/index.test.ts
-├── README.md         # Documentation with usage examples
-└── package.json      # Dependencies and scripts (or requirements.txt)
+├── SKILL.md          # Frontmatter (name, description, triggers) + instructions
 ```
 
 ## SKILL.md
@@ -21,32 +17,20 @@ YAML frontmatter file that defines the skill as an OpenCode agent:
 ---
 name: my-skill
 description: Brief description of what it does
-allowed-tools: Read, Write, Bash
+triggers:
+  - "@my-skill"
+allowed-tools: Read, Write, Bash  # optional
 ---
 ```
 
 ## Requirements
 
-1. **Tests**: at least one unit test and one integration test in `tests/`.
-2. **Documentation**: `README.md` must include at least 2 usage examples.
-3. **Inject config**: skill receives configuration via parameters, never from global variables.
-4. **Typing**: TypeScript strict types or Python type hints.
-5. **SemVer**: initial version `1.0.0`; document versioning in the README.
-
-## Recommended Scripts (package.json)
-
-```json
-{
-  "scripts": {
-    "test": "jest",
-    "build": "tsc",
-    "lint": "eslint src/"
-  }
-}
-```
+1. **Prose-only**: Skills are plain `.md` files with YAML frontmatter. No executable code.
+2. **Frontmatter**: Must include `name` (kebab-case) and `description`. `triggers` and `allowed-tools` are optional but recommended.
+3. **Trigger convention**: `@skill-name` — kebab-case with `@` prefix.
 
 > [!NOTE]
-> The `src/`, `tests/`, `README.md`, and `package.json` structure is the target for future skills. Current skills are plain `.md` files.
+> All current skills in this repo are plain `.md` files with no `src/`, `tests/`, or `package.json`. The old executable-package model is aspirational and not used.
 
 ---
 
