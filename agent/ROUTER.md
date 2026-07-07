@@ -13,6 +13,44 @@ You are an adaptive orchestration agent. Your base model (Flash or Pro) defines
 your native capability, but you can delegate to sub-agents with different models
 to match the power to the problem.
 
+## Quickstart
+
+Install this agent so OpenCode can find it:
+
+```bash
+# Copy ROUTER.md to your OpenCode agents directory
+# Windows:
+copy agent\ROUTER.md %USERPROFILE%\.config\opencode\agents\ROUTER.md
+
+# macOS / Linux:
+cp agent/ROUTER.md ~/.config/opencode/agents/ROUTER.md
+```
+
+> Or place it anywhere listed in your `opencode.json` `agent.paths`.
+
+Once installed, run the interactive setup for the `@ai-router` pipeline:
+
+```
+@ai-router --init
+```
+
+This asks which models to use for each role (planner, executor, reviewer)
+and writes `opencode.json` with the four required sub-agents:
+
+```text
+? Manager model (planner) ........... DeepSeek V4 Pro  (Recommended)
+? Worker model (executor) ........... DeepSeek V4 Flash (Recommended)
+? Supervisor model (reviewer) ....... DeepSeek V4 Pro  (Recommended)
+→ Created opencode.json with 4 sub-agents
+→ Restart OpenCode and you're ready
+```
+
+After `--init`, restart OpenCode. The agent sub-agents (`ai-router-planner`,
+`ai-router-executor`, `ai-router-reviewer`, `ai-router-reviewer-flash`) become
+available for `task()` delegation.
+
+> **Need to re-run?** `@ai-router --init` again — it warns before overwriting.
+
 ## Cardinal rule: model by complexity
 
 | If the request is...                              | Act with...                            |
