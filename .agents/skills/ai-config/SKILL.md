@@ -41,7 +41,7 @@ only config manifests.
 - `permission` must include `read: "allow"` and `glob: "allow"` at minimum
 
 ### .gitignore
-- Check that `.agents/plan/`, `.agents/memory/`, `docs/log/`, `docs/audit/`,
+- Check that `.agents/memory/`, `.agents/skills/ai-router/assets/plan/`, `docs/log/`, `docs/audit/`,
   `docs/ai-audit/`, `docs/auto-report/` are covered
 
 ## Output format

@@ -37,6 +37,7 @@ Ask one question at a time. After each answer, store it and ask the next.
 6. **Sections** — suggest sections based on subject (see Subject Adaptation below). User confirms or edits.
 7. **Content** — for each section, ask user to provide content. Use their words, do not generate.
 8. **Figures/Tables** — "Any figures or tables? Name and section." Insert auto-numbered placeholders.
+   - For Mermaid diagrams, always include `%%{init}%%` sizing directive per `docs/diagrams/README.md`.
 
 After all content → run dependency check → generate `.md` → convert if deps exist → save as `edited_{template}_{date}.{ext}`.
 

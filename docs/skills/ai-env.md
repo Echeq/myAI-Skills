@@ -17,6 +17,37 @@ Environment configuration manager. Scans code for env vars, generates `.env.exam
 
 Manages the full lifecycle of environment configuration. Scans code for env var usage (Node `process.env`, Python `os.getenv`, Go `os.Getenv`, etc.), generates `.env.example` with grouped and documented vars, updates `.gitignore` to exclude `.env` files, creates `docs/ENVIRONMENT.md` reference, and audits for hardcoded secrets.
 
+## Architecture
+
+```mermaid
+%%{init: { 'flowchart': { 'useMaxWidth': true }, 'themeCSS': '.mermaid svg { max-width: 100% !important; height: auto !important; }' } }%%
+flowchart LR
+    subgraph Detection
+        S1["@ai-env --scan"] --> S2[Grep process.env / os.getenv / .env refs]
+        S2 --> S3[List all vars with file:line]
+    end
+    subgraph Setup
+        I1["@ai-env --init"] --> I2[Generate .env.example with groups]
+        I2 --> I3[Update .gitignore]
+        I3 --> I4[Create docs/ENVIRONMENT.md]
+    end
+    subgraph Verification
+        V1["@ai-env --validate"] --> V2[Compare .env vs .env.example]
+        V2 --> V3[Flag missing / extra / stale vars]
+    end
+    subgraph Audit
+        A1["@ai-env --audit"] --> A2[Check committed .env files]
+        A2 --> A3[Check hardcoded secrets in code]
+        A3 --> A4[Check git history for leaks]
+        A4 --> A5[Report with masked values]
+    end
+    S3 --> I1
+    I4 --> V1
+    V3 --> A1
+```
+
+**Why a lifecycle?** Separating detection from setup from verification from audit prevents accidental secret exposure. Each phase has a different security posture: detection is read-only, setup creates safe defaults, verification confirms compliance, and audit is a deep inspection.
+
 ## Usage
 
 | Command | Action |
@@ -45,5 +76,7 @@ Manages the full lifecycle of environment configuration. Scans code for env var 
 > Run `@ai-env --init` on any new project before writing code — it catches missing vars early.
 
 ---
+
+<!-- Last updated: 2026-07-07 via @ai-docs update -->
 
 **[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**

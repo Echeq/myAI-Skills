@@ -55,7 +55,7 @@ Manages the full lifecycle of environment configuration. Scans code for env var 
 
 > [!TIP]
 > Run `@ai-env --init` on any new project before writing code — it catches missing vars early.
-> Pair with `@ai-orchestrator --quick` for fast setup with no interactive questions.
+> Pair with `@ai-router` to route complex multi-step environment setup through its pipeline.
 
 ---
 

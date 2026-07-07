@@ -16,6 +16,32 @@ Interactive report generator. Asks one question at a time, fills a Markdown temp
 
 Interactive report builder that asks one question at a time. Adapts sections to the subject dynamically. Supports 5 export formats. Templates stored in `.agents/skills/auto-report/templates/`. No external dependencies required for Markdown output.
 
+## Architecture
+
+```mermaid
+%%{init: { 'flowchart': { 'useMaxWidth': true }, 'themeCSS': '.mermaid svg { max-width: 100% !important; height: auto !important; }' } }%%
+flowchart TD
+    A["@auto-report"] --> Q1[Format: md / docx / pdf / html / tex]
+    Q1 --> Q2[Language: English / Chinese / Bilingual]
+    Q2 --> Q3[Subject?]
+    Q3 --> Q4{Template exists?}
+    Q4 -->|Yes| Q5[Load subject template]
+    Q4 -->|No| Q6[Load default → adapt sections]
+    Q5 & Q6 --> Q7[Title?]
+    Q7 --> Q8[Authors?]
+    Q8 --> Q9[Confirm sections]
+    Q9 --> Q10[Content per section]
+    Q10 --> Q11[Figures / tables?]
+    Q11 --> DEP{Format dependency?}
+    DEP -->|.md| SAVE[Save .md]
+    DEP -->|docx/pdf/html/tex| PANDOC{pandoc installed?}
+    PANDOC -->|Yes| CONVERT[Convert → save]
+    PANDOC -->|No| FALLBACK[Save .md + install instructions]
+    SAVE & CONVERT & FALLBACK --> DONE[Done]
+```
+
+**Why one question at a time?** Reduces cognitive load, prevents form fatigue, and allows mid-session cancellation without data loss. Each answer is persisted immediately.
+
 ## Usage
 
 | Command | Action |
@@ -132,7 +158,11 @@ If the subject matches a template folder, it is used. Otherwise, the default tem
 
 > [!TIP]
 > No external deps needed for Markdown output. Only install pandoc if you need .docx/.pdf/.html/.tex.
+>
+> If your report includes Mermaid diagrams, include the `%%{init}%%` sizing directive per `docs/diagrams/README.md` to prevent oversized rendering.
 
 ---
 
 **[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
+
+<!-- Last updated: 2026-07-07 via @ai-docs update -->

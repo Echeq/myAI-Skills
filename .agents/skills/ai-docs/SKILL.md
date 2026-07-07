@@ -69,8 +69,9 @@ instructions directly. Each file is self-contained with no frontmatter.
 2. Generate a deep-dive doc adding these sections after Technical Spec:
    - **ADR**: Why this approach over alternatives
    - **Complexity Analysis**: Time & Space (Big-O)
-   - **Dependency Graph**: Imports and external services
-   - **Stress / Edge Cases**: Concurrency, failure modes, edge behavior
+    - **Dependency Graph**: Imports and external services
+      - Must include `%%{init}%%` sizing directive per `docs/diagrams/README.md` so diagrams render at readable scale.
+    - **Stress / Edge Cases**: Concurrency, failure modes, edge behavior
 
 ### UPDATE (`@ai-docs update <name>`)
 Incremental — NEVER full regenerate:

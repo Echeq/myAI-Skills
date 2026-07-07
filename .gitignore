@@ -7,12 +7,26 @@ docs/ai-audit/
 docs/audit/
 docs/auto-report/
 
-# Session memory & plans (agent-generated)
+# Session memory (agent-generated)
 .agents/memory/
-.agents/plan/
+
+# Skill runtime artifacts (regenerated per session — not useful for skill consumers)
+.agents/skills/ai-router/assets/plan/Plan_*.md
+.agents/skills/ai-router/assets/state/current_plan.md
+.agents/skills/ai-router/assets/state/history.md
 
 # Node modules (if any skill adds them in the future)
 node_modules/
+
+# Temp & backup artifacts (defensive)
+*.log
+*.tmp
+*.bak
+
+# IDE/editor config (if generated)
+.vscode/
+.idea/
+*.code-workspace
 
 # OS files
 .DS_Store

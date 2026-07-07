@@ -2,7 +2,7 @@
 
 Browse, install, and update skills from the Echeq/myAI-Skills GitHub repository. Acts as a package manager for OpenCode skills.
 
-> **Trigger:** `@skill-search` | `--list` | `--search` | `--install` | `--update` | `--info`
+> **Trigger:** `@skill-search` | `@skill-search --list` | `@skill-search --search` | `@skill-search --install` | `@skill-search --update` | `@skill-search --info`
 
 ## Quick Start
 
@@ -15,6 +15,24 @@ Browse, install, and update skills from the Echeq/myAI-Skills GitHub repository.
 ## Description
 
 Package manager for OpenCode skills. Fetches from the Echeq/myAI-Skills GitHub repository via API (listing) and raw content (downloading). Supports multi-file skills like ai-git (which has commit.md, branch.md, etc.).
+
+## Architecture
+
+```mermaid
+%%{init: { 'flowchart': { 'useMaxWidth': true }, 'themeCSS': '.mermaid svg { max-width: 100% !important; height: auto !important; }' } }%%
+flowchart TD
+    A["@skill-search --install &lt;name&gt;"] --> B{Already installed?}
+    B -->|Yes| C[Warn: use --update to overwrite]
+    B -->|No| D[Fetch dir via GitHub API]
+    D --> E{API available?}
+    E -->|No| F[Error: rate limited / network]
+    E -->|Yes| G[For each file: download via raw URL]
+    G --> H[Preserve subdirectory structure]
+    H --> I[Write to .agents/skills/&lt;name&gt;/]
+    I --> J[Report: Installed X files]
+```
+
+**Why two data sources?** GitHub API (for listing) is rate-limited to 60 req/hour unauthenticated. Raw content downloads via `raw.githubusercontent.com` have no limit but need explicit file paths. The skill uses API for discovery and raw for content.
 
 ## Usage
 
@@ -42,3 +60,5 @@ Package manager for OpenCode skills. Fetches from the Echeq/myAI-Skills GitHub r
 ---
 
 **[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
+
+<!-- Last updated: 2026-07-07 via @ai-docs update -->
