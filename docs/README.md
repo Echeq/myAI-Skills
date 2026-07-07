@@ -1,6 +1,6 @@
 # Skill Index
 
-Welcome to the myAI-Skills documentation — 8 OpenCode skills for AI-assisted development. Each skill is a self-contained agent that you invoke via `@trigger` commands.
+Welcome to the myAI-Skills documentation — 9 OpenCode skills for AI-assisted development. Each skill is a self-contained agent that you invoke via `@trigger` commands.
 
 ## Ecosystem Overview
 
@@ -33,6 +33,7 @@ flowchart LR
 | :--- | :--- | :--- |
 | [ai-docs](skills/ai-docs.md) | `@ai-docs` | Generates, updates, and audits Markdown documentation. 5 modes: generate, pro deep-dive, incremental update, compliance audit, interaction logging. |
 | [ai-config](skills/ai-config.md) | `@ai-config` | Validates skill frontmatter, opencode.jsonc structure, and .gitignore coverage. Catches broken triggers and missing paths. |
+| [ai-orchestrator](skills/ai-orchestrator.md) | `@ai-orchestrator` | DAG-based task orchestrator with dynamic classification, capability registry, 8-state FSM, cascade failure handling, and deadlock detection. For complex multi-step work. |
 | [skill-search](skills/skill-search.md) | `@skill-search` | Browse, install, and update skills from the Echeq/myAI-Skills GitHub repository. Acts as a package manager for OpenCode skills. |
 
 ### ⚡ Workflow — Get Things Done
@@ -63,6 +64,7 @@ flowchart TD
     Q -->|"Install new skills"| E[skill-search]
     Q -->|"Git commit / PR / release"| F[ai-git]
     Q -->|"Complex multi-step task"| G[ai-router]
+    Q -->|"DAG orchestration / cross-skill"| I[ai-orchestrator]
     Q -->|"Generate a report"| H[auto-report]
 ```
 
@@ -84,6 +86,7 @@ flowchart LR
 | :--- | :--- |
 | [Usage Guide](guides/usage.md) | How to use and chain skills |
 | [Creating Skills](guides/creating-skills.md) | How to create new skills with diagrams and validation checklist |
+| [Agents Guide](guides/agents.md) | Install and set up ROUTER and ORCHESTRATOR standalone agents |
 | [Conventions](reference/conventions.md) | Naming, frontmatter, diagram standards |
 | [Architecture](reference/ARCHITECTURE.md) | ADRs, complexity analysis, dependency graph |
 

@@ -15,7 +15,19 @@ Browse the available skills below, or read the [Skill Index](docs/README.md) for
 | [ai-git](docs/skills/ai-git.md) | `@ai-git` | Git/GitHub skill hub with sub-modules: commit, release, branch, PR |
 | [ai-router](docs/skills/ai-router.md) | `@ai-router` | Task router with planner → executor → reviewer pipeline |
 | [auto-report](docs/skills/auto-report.md) | `@auto-report` | Interactive report generator with multi-format export |
+| [ai-orchestrator](docs/skills/ai-orchestrator.md) | `@ai-orchestrator` | DAG-based task orchestrator with dynamic classification and capability routing |
 | [skill-search](docs/skills/skill-search.md) | `@skill-search` | Skill package manager: browse, install, update from GitHub |
+
+## Standalone Agents
+
+Installable OpenCode agents in `agent/` — copy to `~/.config/opencode/agents/`:
+
+| Agent | File | Backed by |
+|-------|------|-----------|
+| ROUTER | `agent/ROUTER.md` | `@ai-router` (fixed 3-mode pipeline) |
+| ORCHESTRATOR | `agent/ORCHESTRATOR.md` | `@ai-orchestrator` (DAG engine) |
+
+See the [Agents Guide](docs/guides/agents.md) for installation and setup.
 
 ## Repository Structure
 
