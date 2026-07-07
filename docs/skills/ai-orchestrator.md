@@ -48,7 +48,8 @@ flowchart TD
     D6 --> D7{Approved?}
     D7 -->|Minor| D8[executor flash fix]
     D7 -->|Major| D9[executor pro fix]
-    D8 & D9 --> D6
+    D8 --> D6
+    D9 --> D6
     D7 -->|Yes| D10[Log → done]
 
     E --> E1[Read files → executor → reviewer flash → fix → log]
