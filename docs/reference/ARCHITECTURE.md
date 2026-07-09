@@ -120,7 +120,7 @@ flowchart TD
 A skill's `SKILL.md` is updated but `docs/` is not. Mitigation: `@ai-docs audit` flags uncovered code (Critical). `@ai-docs update` reconciles timestamps.
 
 ### Zero-Code Skills
-All 8 skills are prose-only `.md` files with YAML frontmatter. No runtime code, no `src/`, no `tests/`, no `package.json`. Risk: contributors from traditional software backgrounds may expect executable packages.
+All 9 skills are prose-only `.md` files with YAML frontmatter. No runtime code, no `src/`, no `tests/`, no `package.json`. Risk: contributors from traditional software backgrounds may expect executable packages.
 
 ### Cross-Link Rot
 Hardcoded relative paths (`../.agents/skills/`). If the repo is consumed as a submodule, paths break. Current resolution: document path assumption in `docs/ARCHITECTURE.md`.

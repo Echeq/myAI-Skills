@@ -1,6 +1,6 @@
 # Skill Ecosystem
 
-How the 8 skills relate to each other and the repository structure.
+How the 9 skills relate to each other and the repository structure.
 
 ```mermaid
 %%{init: { 'flowchart': { 'useMaxWidth': true }, 'themeCSS': '.mermaid svg { max-width: 100% !important; height: auto !important; }' } }%%

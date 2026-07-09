@@ -2,6 +2,20 @@
 
 Welcome to the myAI-Skills documentation — 9 OpenCode skills for AI-assisted development. Each skill is a self-contained agent that you invoke via `@trigger` commands.
 
+> [!TIP]
+> Looking for the **standalone agents**? See the [Agents Guide](guides/agents.md) to install `ROUTER` or `ORCHESTRATOR`.
+
+## ⭐ Featured — Orchestration & Routing
+
+The two flagship orchestration agents that coordinate multi-step work across all other skills:
+
+| Agent | Type | Engine | Best for | Install |
+|-------|------|--------|----------|---------|
+| **ROUTER** | Standalone agent + skill | Fixed 3-mode pipeline (planner → executor → reviewer) | Complex multi-step tasks with review loops | `copy agent\ROUTER.md %USERPROFILE%\.config\opencode\agents\` |
+| **ORCHESTRATOR** | Standalone agent + skill | DAG engine (8-state FSM, cascade, deadlock detection) | Dependency-aware plans, parallel execution, cross-skill routing | `copy agent\ORCHESTRATOR.md %USERPROFILE%\.config\opencode\agents\` |
+
+Both are available as `@ai-router` / `@ai-orchestrator` triggers after setup with `--init`.
+
 ## Ecosystem Overview
 
 ```mermaid
@@ -94,4 +108,4 @@ flowchart LR
 
 **[⬆ Back to Top](#)** | **[📂 Root README](/README.md)**
 
-<!-- Last updated: 2026-07-07 via @ai-docs update -->
+<!-- Last updated: 2026-07-09 via @ai-docs update -->

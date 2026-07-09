@@ -9,7 +9,7 @@ Intelligent task orchestrator. Classifies requests by intent, decomposes them in
 1. Run `@ai-orchestrator --init` to configure models for planner, executor, and reviewer roles.
 2. Type `@ai-orchestrator <task>` — the skill dynamically classifies the request into **quick**, **plan**, or **debug** mode.
 3. For **plan** mode: decomposes into a formal DAG → delegates subtasks → reviews with task-adaptive criteria → fix loop on rejection.
-4. For **quick** mode: delegates directly to executor; optionally reviewed.
+4. For **quick** mode: delegates directly to executor; always reviewed by flash reviewer.
 5. For **debug** mode: reads files, delegates to executor, reviews, applies fix.
 
 **Example:** `@ai-orchestrator audit this repo for security issues and generate a report` → classified as **plan** (confidence 0.9) → registry matches `ai-audit` (security) and `ai-docs` (documentation) → planner decomposes → DAG executes → review passes → logs to `history.md`.
@@ -32,12 +32,15 @@ flowchart TD
     B -->|"mode: debug"| E[Debug Mode]
 
     C --> C1[executor flash]
-    C1 --> C2{Trivial?}
-    C2 -->|Yes| C3[Return]
-    C2 -->|No| C4[reviewer flash]
-    C4 --> C5{Approved?}
-    C5 -->|Yes| C3
-    C5 -->|No| C6[executor fix → re-review]
+    C1 --> C2[reviewer flash — always]
+    C2 --> C3{Approved?}
+    C3 -->|Yes| C4[Log → done]
+    C3 -->|No| C5{Iteration < 3?}
+    C5 -->|Yes, 1st attempt| C6[executor flash fix]
+    C5 -->|Yes, 2nd-3rd| C7[executor pro fix]
+    C5 -->|No| C8[FAILED → escalate to user]
+    C6 --> C2
+    C7 --> C2
 
     D --> D1[Capability Registry]
     D1 --> D2[planner → subtasks + skill hints]
@@ -48,9 +51,12 @@ flowchart TD
     D6 --> D7{Approved?}
     D7 -->|Minor| D8[executor flash fix]
     D7 -->|Major| D9[executor pro fix]
-    D8 --> D6
-    D9 --> D6
-    D7 -->|Yes| D10[Log → done]
+    D8 --> D10{2nd rejection?}
+    D9 --> D10
+    D10 -->|No| D6
+    D10 -->|Yes| D11[escalate to pro executor]
+    D11 --> D6
+    D7 -->|Yes| D12[Log → done]
 
     E --> E1[Read files → executor → reviewer flash → fix → log]
 ```
@@ -262,4 +268,4 @@ Each sub-agent has a 60-second timeout (configurable in `references/config.md`).
 
 **[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
 
-<!-- Last updated: 2026-07-08 via @ai-docs pro -->
+<!-- Last updated: 2026-07-09 via @ai-docs update -->
