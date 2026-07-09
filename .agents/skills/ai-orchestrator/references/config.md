@@ -20,7 +20,11 @@ fallback_rules:
 
 ```yaml
 timeout: 60
-max_iterations: 3  # After the first fix pass, remaining iterations always use pro executor
+max_iterations: 3
+fix_loop:
+  attempt_1_model: flash     # Same as original executor
+  attempt_2_model: pro       # Escalate — flash likely reproduces same error
+  attempt_3_model: pro       # Last attempt with full reasoning
 ```
 
 ## Allowed Imports (executor)
@@ -92,4 +96,4 @@ dag:
 |--------|----------------------------------------------|-----------------------------------|
 | debug  | "error", "fail", "bug" in query              | executor → review(flash) → fix → log |
 | plan   | dynamic classification output                | classifier → registry → planner → DAG engine → executor/skill → review(adaptive) → fix → log |
-| quick  | default or --quick flag                      | executor(flash) → review(flash or skip) → log |
+| quick  | default or --quick flag                      | executor(flash) → review(flash, always) → log |

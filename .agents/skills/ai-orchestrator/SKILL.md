@@ -110,9 +110,14 @@ capabilities:
 
 ### Quick Mode (simple tasks)
 1. Delegate to **ai-orchestrator-executor** via `task`
-2. If trivial (read-only, single edit) → skip review, log and return
-3. Otherwise → review with **ai-orchestrator-reviewer-flash**
-4. If REJECTED → fix and re-run (up to `max_iterations`)
+2. Review with **ai-orchestrator-reviewer-flash** (always — no skip)
+   - Even for trivial/read-only tasks, run the flash review to catch security issues
+   - If the reviewer returns APPROVED with no issues → log and return
+   - If REJECTED → fix and re-run (up to max_iterations=3):
+     - First fix attempt: use ai-orchestrator-executor (flash) — same as original execution
+     - Second and third fix attempts: escalate to ai-orchestrator-planner (pro) as executor — flash model likely reproduces same error
+     - If all iterations exhausted → mark task FAILED and escalate to user
+3. Log to assets/state/history.md
 
 ### Plan Mode (multi-step tasks)
 1. **Dynamic classification** → extract intent + capabilities
@@ -123,7 +128,10 @@ capabilities:
    - If a skill hint matches → `skill("name")` to load it, delegate
    - Otherwise → **ai-orchestrator-executor**
 6. Review with **ai-orchestrator-reviewer** (task-adaptive criteria)
-7. If REJECTED → severity-based fix loop (minor→flash, major→pro)
+7. If REJECTED → severity-based fix loop with model escalation:
+   - [minor] → fix with ai-orchestrator-executor (flash), but if rejected again, escalate to pro
+   - [major] → fix with ai-orchestrator-planner (pro) immediately
+   - After 2 consecutive rejections (regardless of severity), always use pro executor
 8. Log to `assets/state/history.md`
 
 ### Debug Mode (fixing errors)
