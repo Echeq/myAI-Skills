@@ -19,7 +19,7 @@ When reviewing output from a **flash (small) model**, pay extra attention to pat
 - Are dependencies correctly identified?
 - Are the suggested tools and skills appropriate?
 - Are there any missing steps or edge cases?
-- Are the persisted plan files (`assets/plan/Plan_*.md` and `assets/state/current_plan.md`) correctly written and consistent with the approved plan?
+- Are the persisted plan files (`.agents/memory/ai-orchestrator/assets/plan/Plan_*.md` and `.agents/memory/ai-orchestrator/assets/state/current_plan.md`) correctly written and consistent with the approved plan?
 
 ### For Code
 - Does the code correctly implement the intended logic?

@@ -1,20 +1,21 @@
 # Skill Index
 
-Welcome to the myAI-Skills documentation — 9 OpenCode skills for AI-assisted development. Each skill is a self-contained agent that you invoke via `@trigger` commands.
+Welcome to the myAI-Skills documentation — 10 OpenCode skills for AI-assisted development. Each skill is a self-contained agent that you invoke via `@trigger` commands.
 
 > [!TIP]
-> Looking for the **standalone agents**? See the [Agents Guide](guides/agents.md) to install `ROUTER` or `ORCHESTRATOR`.
+> Looking for the **standalone agents**? See the [Agent Index](agents/README.md) to install `ROUTER`, `ORCHESTRATOR`, or `DELLA`.
 
-## ⭐ Featured — Orchestration & Routing
+## ⭐ Featured — Orchestration, Routing & Planning
 
-The two flagship orchestration agents that coordinate multi-step work across all other skills:
+The three flagship agents that coordinate and plan multi-step work across all skills:
 
-| Agent | Type | Engine | Best for | Install |
+| Agent | File | Engine | Best for | Install |
 |-------|------|--------|----------|---------|
-| **ROUTER** | Standalone agent + skill | Fixed 3-mode pipeline (planner → executor → reviewer) | Complex multi-step tasks with review loops | `copy agent\ROUTER.md %USERPROFILE%\.config\opencode\agents\` |
-| **ORCHESTRATOR** | Standalone agent + skill | DAG engine (8-state FSM, cascade, deadlock detection) | Dependency-aware plans, parallel execution, cross-skill routing | `copy agent\ORCHESTRATOR.md %USERPROFILE%\.config\opencode\agents\` |
+| **DELLA** | `agent/DELLA.md` | Discover → Examine → Link → Layout → Assess | Strategic planning, workflow composition, capability discovery | `copy agent\DELLA.md %USERPROFILE%\.config\opencode\agents\` |
+| **ROUTER** | `agent/ROUTER.md` | Fixed 3-mode pipeline (planner → executor → reviewer) | Complex multi-step tasks with review loops | `copy agent\ROUTER.md %USERPROFILE%\.config\opencode\agents\` |
+| **ORCHESTRATOR** | `agent/ORCHESTRATOR.md` | DAG engine (8-state FSM, cascade, deadlock detection) | Dependency-aware plans, parallel execution, cross-skill routing | `copy agent\ORCHESTRATOR.md %USERPROFILE%\.config\opencode\agents\` |
 
-Both are available as `@ai-router` / `@ai-orchestrator` triggers after setup with `--init`.
+ROUTER and ORCHESTRATOR are also available as `@ai-router` / `@ai-orchestrator` triggers after setup with `--init`.
 
 ## Ecosystem Overview
 
@@ -25,6 +26,7 @@ flowchart LR
         A[ai-docs] --> D[Generates docs]
         B[ai-config] --> E[Validates config]
         C[skill-search] --> F[Installs skills]
+        Z[ai-init] --> Y[Bootstraps docs]
     end
     subgraph Workflow["Get Things Done"]
         G[ai-git] --> H[Git/GitHub ops]
@@ -47,6 +49,7 @@ flowchart LR
 | :--- | :--- | :--- |
 | [ai-docs](skills/ai-docs.md) | `@ai-docs` | Generates, updates, and audits Markdown documentation. 5 modes: generate, pro deep-dive, incremental update, compliance audit, interaction logging. |
 | [ai-config](skills/ai-config.md) | `@ai-config` | Validates skill frontmatter, opencode.jsonc structure, and .gitignore coverage. Catches broken triggers and missing paths. |
+| [ai-init](skills/ai-init.md) | `@ai-init` | Bootstraps project documentation in < 5 minutes. Auto-detects stack and tooling, generates ARCHITECTURE.md, CONVENTIONS.md, DECISIONS.md, ERRORS.md, and updates AGENTS.md. |
 | [ai-orchestrator](skills/ai-orchestrator.md) | `@ai-orchestrator` | DAG-based task orchestrator with dynamic classification, capability registry, 8-state FSM, cascade failure handling, and deadlock detection. For complex multi-step work. |
 | [skill-search](skills/skill-search.md) | `@skill-search` | Browse, install, and update skills from the Echeq/myAI-Skills GitHub repository. Acts as a package manager for OpenCode skills. |
 
@@ -79,6 +82,8 @@ flowchart TD
     Q -->|"Git commit / PR / release"| F[ai-git]
     Q -->|"Complex multi-step task"| G[ai-router]
     Q -->|"DAG orchestration / cross-skill"| I[ai-orchestrator]
+    Q -->|"Strategic planning / workflow design"| J[DELLA]
+    Q -->|"Bootstrap project docs"| K[ai-init]
     Q -->|"Generate a report"| H[auto-report]
 ```
 
@@ -87,7 +92,8 @@ flowchart TD
 ```mermaid
 %%{init: { 'flowchart': { 'useMaxWidth': true }, 'themeCSS': '.mermaid svg { max-width: 100% !important; height: auto !important; }' } }%%
 flowchart LR
-    START[New to the repo?] --> CFG[1. @ai-config --check]
+    START[New to the repo?] --> INIT[0. @ai-init]
+    INIT --> CFG[1. @ai-config --check]
     CFG --> ENV[2. @ai-env --scan]
     ENV --> AUDIT[3. @ai-audit]
     AUDIT --> DOCS[4. @ai-docs update]
@@ -100,7 +106,8 @@ flowchart LR
 | :--- | :--- |
 | [Usage Guide](guides/usage.md) | How to use and chain skills |
 | [Creating Skills](guides/creating-skills.md) | How to create new skills with diagrams and validation checklist |
-| [Agents Guide](guides/agents.md) | Install and set up ROUTER and ORCHESTRATOR standalone agents |
+| [Agents Guide](guides/agents.md) | Install and set up ROUTER, ORCHESTRATOR, and DELLA standalone agents |
+| [Agent Index](agents/README.md) | Full documentation for all standalone agents |
 | [Conventions](reference/conventions.md) | Naming, frontmatter, diagram standards |
 | [Architecture](reference/ARCHITECTURE.md) | ADRs, complexity analysis, dependency graph |
 
@@ -108,4 +115,4 @@ flowchart LR
 
 **[⬆ Back to Top](#)** | **[📂 Root README](/README.md)**
 
-<!-- Last updated: 2026-07-09 via @ai-docs update -->
+<!-- Last updated: 2026-07-10 via @ai-docs update -->

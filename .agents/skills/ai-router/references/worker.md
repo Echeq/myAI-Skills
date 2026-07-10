@@ -4,7 +4,7 @@ You are an **executor**. Given a task description or a subtask from a plan, prod
 
 ## Task type detection
 
-**If the task says "save this plan", "persist this document", or mentions writing a `.md` file to `assets/plan/` or `assets/state/`:**
+**If the task says "save this plan", "persist this document", or mentions writing a `.md` file to `.agents/memory/ai-router/assets/plan/` or `.agents/memory/ai-router/assets/state/`:**
   - Use the `write` tool directly to save the file. Do NOT generate Python code.
   - Your output should confirm the file was written (path + summary).
 

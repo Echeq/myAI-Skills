@@ -132,7 +132,7 @@ if skill_match:
 
 - If a sub-agent fails: retry with more context, switch agents, or do it yourself.
 - If a DAG task fails irrecoverably: the orchestrator logs cascade propagation.
-  Check `assets/state/task_states.json` and `dag.py status` for the current graph.
+  Check `.agents/memory/ai-orchestrator/assets/state/task_states.json` and `dag.py status` for the current graph.
 - PowerShell: use `if ($?) { }` to chain commands (`&&` does not work).
 
 ## Reminder

@@ -26,7 +26,7 @@ from typing import Optional
 
 # ── Constants ────────────────────────────────────────────────
 
-STATE_FILE = ".agents/skills/ai-orchestrator/assets/state/task_states.json"
+STATE_FILE = ".agents/memory/ai-orchestrator/assets/state/task_states.json"
 
 STATES = {"READY", "RUNNING", "BLOCKED", "COMPLETED", "FAILED", "CANCELLED", "SKIPPED", "PAUSED"}
 TERMINAL_STATES = {"COMPLETED", "CANCELLED", "SKIPPED"}  # FAILED is retryable, NOT terminal

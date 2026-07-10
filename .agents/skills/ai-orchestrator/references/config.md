@@ -85,8 +85,8 @@ environments:
 dag:
   timeout_seconds: 60            # Uniform per-task timeout (no priorities yet)
   max_attempts: 1                # Phase 1: single attempt, no retry logic
-  state_file: ".agents/skills/ai-orchestrator/assets/state/task_states.json"
-  plan_input: "assets/plan/plan_input.json"
+  state_file: ".agents/memory/ai-orchestrator/assets/state/task_states.json"
+  plan_input: ".agents/memory/ai-orchestrator/assets/plan/plan_input.json"
   checkpoint_timeout: 300        # Default if PAUSED state is triggered
 ```
 

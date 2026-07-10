@@ -7,7 +7,7 @@ state machine. The orchestrator invokes it via `bash` tool.
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `python dag.py init <plan.json>` | Load plan, build DAG, write task_states.json | `bash: python .agents/skills/ai-orchestrator/dag.py init assets/plan/plan_input.json` |
+| `python dag.py init <plan.json>` | Load plan, build DAG, write task_states.json | `bash: python .agents/skills/ai-orchestrator/dag.py init .agents/memory/ai-orchestrator/assets/plan/plan_input.json` |
 | `python dag.py run` | Pop next READY task or signal done | `bash: python .agents/skills/ai-orchestrator/dag.py run` |
 | `python dag.py complete <task_id>` | Mark task COMPLETED, unblock dependents | `bash: python .agents/skills/ai-orchestrator/dag.py complete 1` |
 | `python dag.py fail <task_id> "<error>"` | Mark task FAILED, cascade to dependents | `bash: python .agents/skills/ai-orchestrator/dag.py fail 2 "syntax error"` |

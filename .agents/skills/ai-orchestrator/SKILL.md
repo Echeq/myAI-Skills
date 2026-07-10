@@ -117,7 +117,7 @@ capabilities:
      - First fix attempt: use ai-orchestrator-executor (flash) — same as original execution
      - Second and third fix attempts: escalate to ai-orchestrator-planner (pro) as executor — flash model likely reproduces same error
      - If all iterations exhausted → mark task FAILED and escalate to user
-3. Log to assets/state/history.md
+3. Log to .agents/memory/ai-orchestrator/assets/state/history.md
 
 ### Plan Mode (multi-step tasks)
 1. **Dynamic classification** → extract intent + capabilities
@@ -132,7 +132,7 @@ capabilities:
    - [minor] → fix with ai-orchestrator-executor (flash), but if rejected again, escalate to pro
    - [major] → fix with ai-orchestrator-planner (pro) immediately
    - After 2 consecutive rejections (regardless of severity), always use pro executor
-8. Log to `assets/state/history.md`
+8. Log to `.agents/memory/ai-orchestrator/assets/state/history.md`
 
 ### Debug Mode (fixing errors)
 1. Read relevant files / search
@@ -144,7 +144,7 @@ capabilities:
 
 For **plan mode**, the orchestrator uses a formal Directed Acyclic Graph (DAG)
 execution engine with an 8-state machine per subtask. See full design in
-`assets/plan/Plan_task_lifecycle.md`.
+`.agents/memory/ai-orchestrator/assets/plan/Plan_task_lifecycle.md`.
 
 ### Pipeline (Phase 1 — DAG only, no priorities)
 
@@ -161,7 +161,7 @@ execution engine with an 8-state machine per subtask. See full design in
 7. **Cancel** — `@ai-orchestrator --cancel <id>` calls `dag.py cancel <id>` (NO cascade)
 8. **Cancel all** — `@ai-orchestrator --cancel-all` — cancels all non-terminal tasks
 9. **Status** — `@ai-orchestrator --status` calls `dag.py status` — displays current state table
-10. **Log** — Results appended to `assets/state/history.md`
+10. **Log** — Results appended to `.agents/memory/ai-orchestrator/assets/state/history.md`
 
 ### State Machine
 
@@ -240,10 +240,10 @@ if skill_match:
 
 ## State & History
 
-- **`assets/state/task_states.json`** — machine-readable state persistence. Source of truth for the DAG engine. Written atomically after every transition.
-- **`assets/state/current_plan.md`** — active plan (or "No active plan." if idle)
-- **`assets/state/history.md`** — append-only log with ISO timestamp, mode, outcome
-- **`assets/plan/`** — archived plans with dated filenames
+- **`.agents/memory/ai-orchestrator/assets/state/task_states.json`** — machine-readable state persistence. Source of truth for the DAG engine. Written atomically after every transition.
+- **`.agents/memory/ai-orchestrator/assets/state/current_plan.md`** — active plan (or "No active plan." if idle)
+- **`.agents/memory/ai-orchestrator/assets/state/history.md`** — append-only log with ISO timestamp, mode, outcome
+- **`.agents/memory/ai-orchestrator/assets/plan/`** — archived plans with dated filenames
 
 ## Example Flow
 

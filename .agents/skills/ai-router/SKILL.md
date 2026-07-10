@@ -52,13 +52,13 @@ Use the rules in `references/config.md` to classify the incoming query into one 
 2. **If the request is trivial** (read-only info, simple question, single edit): skip review entirely, log and return.
 3. **Otherwise**: delegate output to **ai-router-reviewer-flash** via `task` for lightweight review.
 4. If REJECTED, classify severity (same as plan mode) then fix and re-run (up to `max_iterations` from config).
-5. Log outcome to `assets/state/history.md`.
+5. Log outcome to `.agents/memory/ai-router/assets/state/history.md`.
 
 ### Plan Mode
 1. Send to **ai-router-planner** via `task` with the user request as `prompt`. The planner returns a structured Markdown plan **only** — it does NOT write any files.
 2. **Write the plan directly** using the `write` tool:
-   - Save to `assets/plan/Plan_<date>_<nnn>.md`.
-   - Update `assets/state/current_plan.md` with the subtask list.
+   - Save to `.agents/memory/ai-router/assets/plan/Plan_<date>_<nnn>.md`.
+   - Update `.agents/memory/ai-router/assets/state/current_plan.md` with the subtask list.
 3. For each subtask in order:
    - Send to **ai-router-executor** with the subtask description as `prompt`.
    - Collect result.
@@ -116,9 +116,9 @@ skill <skill_name>
 
 ## State & History
 
-- **`assets/state/current_plan.md`** — always contains the active plan (or "No active plan." if idle).
-- **`assets/state/history.md`** — append-only log. Each entry must have an ISO timestamp, mode, outcome, and a brief summary.
-- **`assets/plan/`** — saved plans with dated filenames for reference.
+- **`.agents/memory/ai-router/assets/state/current_plan.md`** — always contains the active plan (or "No active plan." if idle).
+- **`.agents/memory/ai-router/assets/state/history.md`** — append-only log. Each entry must have an ISO timestamp, mode, outcome, and a brief summary.
+- **`.agents/memory/ai-router/assets/plan/`** — saved plans with dated filenames for reference.
 
 ## Example Flow
 
@@ -126,7 +126,7 @@ skill <skill_name>
 
 1. Query triggers **plan** mode (contains "build").
 2. Send to `ai-router-planner`; receive a structured plan.
-3. Write the plan directly: `assets/plan/Plan_2026-07-07_001.md` and `assets/state/current_plan.md` via `write` tool.
+3. Write the plan directly: `.agents/memory/ai-router/assets/plan/Plan_2026-07-07_001.md` and `.agents/memory/ai-router/assets/state/current_plan.md` via `write` tool.
 4. For each subtask (e.g. "parse CLI args", "fetch weather API", "format output"), send to `ai-router-executor`.
 5. Review with `ai-router-reviewer` (pro).
 6. If REJECTED, the reviewer classifies severity (minor→flash fix, major→pro fix) and re-runs the fix loop.
