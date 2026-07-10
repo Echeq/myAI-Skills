@@ -14,9 +14,6 @@ docs/ai-init/
 
 # Session memory (agent-generated)
 .agents/memory/
-!.agents/memory/*/.gitkeep
-!.agents/memory/*/assets/plan/.gitkeep
-!.agents/memory/*/assets/state/.gitkeep
 
 # Legacy skill runtime artifacts (migrated to .agents/memory/ — keep ignored until cleaned)
 .agents/skills/ai-router/assets/plan/Plan_*.md
