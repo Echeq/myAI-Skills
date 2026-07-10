@@ -1,56 +1,110 @@
 # myAI-Skills
 
-Modular, reusable skill packages for AI-assisted development. Each skill is a self-contained OpenCode agent with its own documentation and conventions.
+> **10 prose-only OpenCode skills** for AI-assisted development. Each skill is a self-contained agent invoked via `@trigger` commands — no runtime code, no build steps, no package managers.
+
+[📂 Welcome](docs/WELCOME.md) • [📂 Skill Index](docs/README.md) • [📂 Agents](docs/agents/README.md) • [📂 Guides](docs/guides/usage.md)
+
+---
 
 ## Quick Start
 
-Browse the available skills below, or read the [Skill Index](docs/README.md) for full documentation.
+| Step | Action | What happens |
+|:-----|:-------|:-------------|
+| 1 | Browse available skills | `@skill-search --list` or visit the [Skill Index](docs/README.md) |
+| 2 | Validate repo config | `@ai-config --check` |
+| 3 | Scan for env vars | `@ai-env --scan` |
+| 4 | Generate documentation | `@ai-docs` |
+| 5 | Start working | Pick a skill from the table below |
+
+---
+
+## All Skills
 
 | Skill | Trigger | Description |
-|-------|---------|-------------|
-| [ai-audit](docs/skills/ai-audit.md) | `@ai-audit` | Code quality auditor with health scoring |
-| [ai-config](docs/skills/ai-config.md) | `@ai-config` | Config validator for frontmatter, opencode.jsonc, .gitignore |
-| [ai-docs](docs/skills/ai-docs.md) | `@ai-docs` | Doc generation, update, audit, and AI interaction logging |
-| [ai-env](docs/skills/ai-env.md) | `@ai-env` | Environment config manager, `.env.example` generation, secret auditing |
-| [ai-git](docs/skills/ai-git.md) | `@ai-git` | Git/GitHub skill hub with sub-modules: commit, release, branch, PR |
-| [ai-router](docs/skills/ai-router.md) | `@ai-router` | Task router with planner → executor → reviewer pipeline |
-| [auto-report](docs/skills/auto-report.md) | `@auto-report` | Interactive report generator with multi-format export |
-| [ai-orchestrator](docs/skills/ai-orchestrator.md) | `@ai-orchestrator` | DAG-based task orchestrator with dynamic classification and capability routing |
-| [skill-search](docs/skills/skill-search.md) | `@skill-search` | Skill package manager: browse, install, update from GitHub |
+|:------|:--------|:------------|
+| [ai-audit](docs/skills/ai-audit.md) | `@ai-audit` | Code quality auditor with 5 weighted categories and regression tracking |
+| [ai-config](docs/skills/ai-config.md) | `@ai-config` | Config validator for frontmatter, opencode.json, .gitignore |
+| [ai-docs](docs/skills/ai-docs.md) | `@ai-docs` | Generates, updates, and audits Markdown documentation in /docs/ |
+| [ai-env](docs/skills/ai-env.md) | `@ai-env` | Environment config manager — scan, init, validate, audit |
+| [ai-git](docs/skills/ai-git.md) | `@ai-git` | Git/GitHub hub: commit, release, branch, PR |
+| [ai-init](docs/skills/ai-init.md) | `@ai-init` | Bootstraps project docs in under 5 minutes with auto-detection |
+| [ai-orchestrator](docs/skills/ai-orchestrator.md) | `@ai-orchestrator` | DAG-based task orchestration with capability registry and 8-state FSM |
+| [ai-router](docs/skills/ai-router.md) | `@ai-router` | 3-mode pipeline engine (quick/plan/debug) for task routing |
+| [auto-report](docs/skills/auto-report.md) | `@auto-report` | Interactive 8-step wizard for report generation in 5 formats |
+| [skill-search](docs/skills/skill-search.md) | `@skill-search` | Package manager: browse, install, update skills from GitHub |
+
+---
 
 ## Standalone Agents
 
 Installable OpenCode agents in `agent/` — copy to `~/.config/opencode/agents/`:
 
-| Agent | File | Backed by |
-|-------|------|-----------|
-| ROUTER | `agent/ROUTER.md` | `@ai-router` (fixed 3-mode pipeline) |
-| ORCHESTRATOR | `agent/ORCHESTRATOR.md` | `@ai-orchestrator` (DAG engine) |
+| Agent | File | Backed by | Best for |
+|:------|:-----|:----------|:---------|
+| DELLA | `agent/DELLA.md` | Strategic planning (no skill needed) | Planning workflows before execution |
+| ROUTER | `agent/ROUTER.md` | `@ai-router` (3-mode pipeline) | Daily tasks, simple multi-step work |
+| ORCHESTRATOR | `agent/ORCHESTRATOR.md` | `@ai-orchestrator` (DAG engine) | Complex dependency chains, parallel execution |
 
-See the [Agents Guide](docs/guides/agents.md) for installation and setup.
+See the [Agent Index](docs/agents/README.md) for installation and setup.
+
+---
 
 ## Repository Structure
 
 ```
 .agents/
-  memory/             Session memory & token tracking
-  plan/               Generated plans by date subdirectories
-  skills/             OpenCode agent/skill definitions
-    <name>/SKILL.md   Skill package (frontmatter + instructions)
-    ai-git/           Git/GitHub skill hub (router + sub-modules)
+  skills/             Skill definitions — source of truth
+    <name>/SKILL.md   Skill package (YAML frontmatter + Markdown instructions)
+    ai-git/           Git/GitHub hub with sub-modules
+    ai-router/        Pipeline engine with sub-agent references
+    ai-orchestrator/  DAG engine with dag.py + sub-agent references
+  memory/             Session memory & audit tracking (gitignored)
+
+agent/                Standalone agent files (copy to ~/.config/opencode/agents/)
+  ROUTER.md           Lightweight daily task agent
+  ORCHESTRATOR.md     Complex multi-step orchestrator
+  DELLA.md            Strategic planning consultant
+
 docs/                 Documentation
-  README.md           Skill index
+  WELCOME.md          Landing page — start here
+  README.md           Skill index (auto-generated)
+  agents/             Agent documentation
+  skills/             Per-skill documentation pages (auto-generated)
   guides/             Usage and creation guides
   reference/          Conventions and architecture
-  skills/             Per-skill documentation pages
-  audit/              Audit reports
+  diagrams/           Mermaid diagram standards and ecosystem maps
+  audit/              Compliance audit reports (gitignored)
   log/                AI interaction logs (gitignored)
+  ENVIRONMENT.md      Environment variable reference (generated by @ai-env)
+  DELLA_PLAN/         DELLA planning artifacts
 ```
 
-## Documentation
+---
 
-- [Skill Index](docs/README.md) — full index of all 8 skills with architecture diagrams
-- [Usage Guide](docs/guides/usage.md) — how to invoke and chain skills
-- [Creating Skills](docs/guides/creating-skills.md) — how to create new skills
-- [Conventions](docs/reference/conventions.md) — naming, frontmatter, diagram standards
-- [Architecture](docs/reference/ARCHITECTURE.md) — ADRs, complexity analysis, dependency graph
+## Documentation Map
+
+| To do this... | Go here |
+|:--------------|:--------|
+| Start here if you're lost | [Welcome / Landing Page](docs/WELCOME.md) |
+| Browse all skills by category | [Skill Index](docs/README.md) |
+| Install and use agents | [Agent Index](docs/agents/README.md) |
+| Learn how to invoke and chain skills | [Usage Guide](docs/guides/usage.md) |
+| Create a new skill | [Creating Skills Guide](docs/guides/creating-skills.md) |
+| Naming, frontmatter, and diagram rules | [Conventions](docs/reference/conventions.md) |
+| ADRs, complexity analysis, dependency graph | [Architecture](docs/reference/ARCHITECTURE.md) |
+
+---
+
+## Key Facts for Agents
+
+- **Platform:** Windows (PowerShell). Chain commands with `cmd1; if ($?) { cmd2 }` — `&&` not supported.
+- **No runtime code:** Skills are prose-only Markdown. No `package.json`, no `requirements.txt`, no build/lint/test commands.
+- **One exception:** `.agents/skills/ai-orchestrator/dag.py` (Python CLI, stdlib only).
+- **Source of truth:** `.agents/skills/<name>/SKILL.md` — edit these. `docs/` is auto-generated — use `@ai-docs` to update.
+- **Trigger rules:** `@` prefix, kebab-case, unique across repo. Flags use `--`.
+- **Mermaid diagrams:** Every diagram needs `%%{init}%%` directive as its first line.
+- **opencode.json:** Gitignored. Run `@ai-router --init` or `@ai-orchestrator --init` to create it.
+
+---
+
+> **Last updated:** 2026-07-10

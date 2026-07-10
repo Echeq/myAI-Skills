@@ -1,44 +1,41 @@
 # ai-config
 
-Configuration manager for this repo. Reads and validates opencode.json/.jsonc, skill frontmatter across `.agents/skills/`, and `.gitignore` consistency.
+> **Trigger:** `@ai-config` | **Tools:** Read, Write, Bash, Glob, Grep | **Category:** Configuration
 
-> **Trigger:** `@ai-config` | `@ai-config --list` | `@ai-config --check` | `@ai-config --validate-opencode` | `@ai-config --gitignore`
-
-## Quick Start
-
-1. Type `@ai-config --list` to see all skills with triggers.
-2. Type `@ai-config --check` to run all consistency checks.
-3. Type `@ai-config --validate-opencode` to validate subagent config.
-
-**Example:** `@ai-config --check` → validates 10 skills → reports "✅ All trigger names are kebab-case" → "❌ Missing .gitignore entry".
-
-## Description
-
-Manages and validates this repo's configuration files. Never edits code — only config manifests. Reads SKILL.md frontmatter from all skills, opencode.jsonc structure, and .gitignore coverage. Checks for broken triggers, duplicate triggers, missing allowed-tools, and incomplete .gitignore entries.
-
-## Usage
-
-| Command | Action |
-| :--- | :--- |
-| `@ai-config` | Interactive: choose mode from list |
-| `@ai-config --list` | List all skills with name, description, triggers |
-| `@ai-config --check` | Run all consistency checks (triggers, naming, .gitignore) |
-| `@ai-config --validate-opencode` | Validate opencode.jsonc structure |
-| `@ai-config --gitignore` | Check .gitignore for recommended entries |
-
-## Configuration
-
-| Source | What is validated |
-| :--- | :--- |
-| `.agents/skills/*/SKILL.md` | Frontmatter: name (kebab-case), description, triggers (@-prefixed, kebab-case, unique), allowed-tools |
-| `opencode.jsonc` | Subagent definitions: description, mode ("subagent"), permission (read + glob minimum) |
-| `.gitignore` | Coverage for generated paths: `.agents/memory/`, `docs/log/`, `docs/audit/`, `docs/ai-audit/`, `docs/auto-report/` |
-
-> [!NOTE]
-> This skill validates but never edits configuration files unless explicitly asked. Run `@ai-config --check` periodically to catch drift.
+[📂 Skill Index](/docs/README.md) → **ai-config**
 
 ---
 
-**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
+## Quick Reference
 
-<!-- Last updated: 2026-07-10 via @ai-docs update -->
+| Mode | Trigger | What happens |
+|:-----|:--------|:-------------|
+| Interactive | `@ai-config` | Choose validation mode from an interactive list |
+| List | `@ai-config --list` | List all skills with name, description, and triggers |
+| Check | `@ai-config --check` | Validate frontmatter, opencode.json, and .gitignore |
+| Validate opencode | `@ai-config --validate-opencode` | Validate opencode.json/jsonc structure |
+| Gitignore | `@ai-config --gitignore` | Check .gitignore coverage for generated paths |
+
+> [!TIP]
+> Run `@ai-config --check` after creating or editing any SKILL.md to catch frontmatter issues early.
+
+## Overview
+
+Configuration manager for this repository. Reads and validates opencode.json/.jsonc, skill frontmatter across `.agents/skills/`, and `.gitignore` consistency. Never edits code — only configuration manifests.
+
+## Commands
+
+| Flag | Description |
+|:-----|:------------|
+| `(bare)` | Interactive mode: choose validation from a list |
+| `--list` | List all installed skills with name, description, and triggers |
+| `--check` | Validate all skill frontmatter, opencode.json structure, and .gitignore |
+| `--validate-opencode` | Validate the structure of opencode.json or opencode.jsonc |
+| `--gitignore` | Check that .gitignore covers all generated and gitignored paths |
+
+> [!NOTE]
+> This skill only validates configuration. It does not modify any files. Use it as a gate before committing changes to skills or config.
+
+---
+
+[⬆ Back to Top](#) | [📂 Skill Index](/docs/README.md)

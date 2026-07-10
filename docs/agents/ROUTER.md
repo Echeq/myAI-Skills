@@ -1,8 +1,12 @@
-# ROUTER
+# ROUTER Agent
 
-Adaptive orchestration agent. Classifies requests by complexity and routes them to the appropriate execution path — direct (flash-tier) for quick tasks, or skill-loaded pipeline (pro-tier) for complex work.
+> Adaptive orchestration agent. Classifies requests by complexity and routes them to the appropriate execution path — direct (flash-tier) for quick tasks, or skill-loaded pipeline (pro-tier) for complex work.
 
-> **File:** `agent/ROUTER.md`
+**File:** `agent/ROUTER.md`
+
+[📂 Agent Index](/docs/agents/README.md) → **ROUTER**
+
+---
 
 ## Quick Start
 
@@ -10,17 +14,23 @@ Adaptive orchestration agent. Classifies requests by complexity and routes them 
 2. Run `@ai-router --init` to write `opencode.json` with the 4 required sub-agents
 3. Restart OpenCode
 
-## Description
+---
+
+## Overview
 
 ROUTER classifies incoming requests into three modes using keyword heuristics. It delegates strategic planning to the `ai-router-planner` sub-agent (Pro model), execution to `ai-router-executor` (Flash), and review to either `ai-router-reviewer` (Pro) or `ai-router-reviewer-flash` depending on the mode. After execution, it logs outcomes to `assets/state/history.md`.
+
+---
 
 ## Pipeline Modes
 
 | Mode | Trigger | Execution |
-|---|---|---|
+|:-----|:--------|:----------|
 | **quick** | Default for short requests | executor(flash) → review(flash or skip for trivial) |
 | **plan** | Action verbs (build/create/implement) or length > 150 chars | planner(pro) → executor × N → review(pro) → fix loop |
 | **debug** | "error", "fail", "bug" | read context → executor → review(flash) → fix → log |
+
+---
 
 ## Key Features
 
@@ -29,17 +39,22 @@ ROUTER classifies incoming requests into three modes using keyword heuristics. I
 - **Escalation**: If rejected after fix pass, escalate to Pro regardless of severity
 - **State persistence**: Plans saved to `assets/plan/`; current state in `assets/state/current_plan.md`; history in `assets/state/history.md`
 
+---
+
 ## Configuration
 
 Requires 4 sub-agents in `opencode.json`:
 
-| Sub-agent | Model | Prompt |
-|---|---|---|
+| Sub-agent | Model | Prompt file |
+|:----------|:------|:------------|
 | `ai-router-planner` | Pro | `references/manager.md` |
 | `ai-router-executor` | Flash | `references/worker.md` |
 | `ai-router-reviewer` | Pro | `references/supervisor.md` |
 | `ai-router-reviewer-flash` | Flash | `references/supervisor-lite.md` |
 
+> [!NOTE]
+> Run `@ai-router --init` to generate the `opencode.json` configuration interactively.
+
 ---
 
-**[⬆ Back to Top](#)** | **[📂 Agent Index](/docs/agents/README.md)**
+[⬆ Back to Top](#) | [📂 Agent Index](/docs/agents/README.md) | [📂 Skill Index](/docs/README.md)

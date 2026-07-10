@@ -1,14 +1,20 @@
 # Creating Skills
 
-Guide to creating a new OpenCode skill in this repository.
+> Guide to creating a new OpenCode skill in this repository.
+
+[📂 Welcome](/docs/WELCOME.md) • [📂 Skill Index](/docs/README.md) • [📂 Conventions](/docs/reference/conventions.md)
+
+---
 
 ## Why Prose-Only?
 
-Skills in this repo are plain Markdown files with YAML frontmatter — no executable code, no build steps, no package managers. This design choice has three benefits:
+Skills in this repo are plain Markdown files with YAML frontmatter — no executable code, no build steps, no package managers:
 
 - **Zero friction** — Write instructions, not code. No TypeScript compilation, no dependency resolution, no CI pipelines.
-- **Token-efficient** — The agent reads only what it needs. A 50-line SKILL.md loads instantly and costs pennies.
+- **Token-efficient** — The agent reads only what it needs. A 50-line SKILL.md loads instantly.
 - **Version-controllable** — Every change is a readable diff, unlike compiled or binary formats.
+
+---
 
 ## Creation Flow
 
@@ -30,9 +36,11 @@ flowchart TD
     L --> M[Test: type @your-skill in OpenCode]
 ```
 
+---
+
 ## Skill Design Pattern
 
-Skills follow a standard format defined at [agentskills.io](https://agentskills.io) and supported by 40+ AI tools including OpenCode, Claude Code, Codex, Cursor, and Windsurf.
+Skills follow a standard format:
 
 ```
 my-skill/
@@ -44,38 +52,23 @@ my-skill/
 
 Hubs like `ai-git` and `ai-router` use sub-modules in the same directory for token efficiency: the main `SKILL.md` routes to specialized `.md` files, so only the needed instructions are loaded.
 
+---
+
 ## Installation Paths
 
-Skills can be installed in any of these locations. The tool checks them in order — project paths override global ones.
+Skills can be installed in any of these locations (project paths override global ones):
 
-### OpenCode
+| Tool | Project path | Global path |
+|:-----|:-------------|:------------|
+| OpenCode | `.opencode/skills/<name>/SKILL.md` | `~/.config/opencode/skills/<name>/SKILL.md` |
+| Claude Code | `.claude/skills/<name>/SKILL.md` | `~/.claude/skills/<name>/SKILL.md` |
+| Compatible | `.agents/skills/<name>/SKILL.md` | `~/.agents/skills/<name>/SKILL.md` |
 
-| Scope | Path |
-| :--- | :--- |
-| Project | `.opencode/skills/<name>/SKILL.md` |
-| Global | `~/.config/opencode/skills/<name>/SKILL.md` |
-
-### Claude Code (compatible)
-
-| Scope | Path |
-| :--- | :--- |
-| Project | `.claude/skills/<name>/SKILL.md` |
-| Global | `~/.claude/skills/<name>/SKILL.md` |
-
-### Agent (compatible)
-
-| Scope | Path |
-| :--- | :--- |
-| Project | `.agents/skills/<name>/SKILL.md` |
-| Global | `~/.agents/skills/<name>/SKILL.md` |
-
-Skills are loaded at tool startup. Only the `name` and `description` are read initially — the full instructions load on demand when a skill's description matches your request. This keeps startup fast and token-efficient.
+---
 
 ## SKILL.md Anatomy
 
 ### Frontmatter
-
-YAML between `---` markers that defines the skill's identity:
 
 ```yaml
 ---
@@ -89,10 +82,10 @@ allowed-tools: Read, Write, Bash, Glob, Grep
 ```
 
 | Field | Required | Why |
-| :--- | :--- | :--- |
+|:------|:---------|:----|
 | `name` | Yes | Kebab-case identifier. Must be unique across all skills. Used as the directory name. |
 | `description` | Yes | One-liner shown in `@skill-search --list` and the doc index. Imperative tone preferred. |
-| `triggers` | Recommended | List of `@trigger` strings. First one is the primary trigger. Must be unique — ambiguous triggers break routing. |
+| `triggers` | Recommended | List of `@trigger` strings. First one is the primary trigger. Must be unique. |
 | `allowed-tools` | Optional | Comma-separated tools the agent may use. If omitted, OpenCode's default permissions apply. |
 
 ### Instructions
@@ -105,9 +98,9 @@ After the frontmatter, write Markdown instructions for the agent. Start with a c
 Do X, Y, and Z. Follow these rules:
 ```
 
-### When to Use Sub-Modules
+### Sub-Modules
 
-If your skill has multiple distinct commands (like `ai-git` with `--commit`, `--branch`, `--pr`), split them into separate `.md` files in the same directory:
+If your skill has multiple distinct commands, split them into separate `.md` files:
 
 ```
 .agents/skills/ai-git/
@@ -118,7 +111,9 @@ If your skill has multiple distinct commands (like `ai-git` with `--commit`, `--
 └── release.md        # @ai-git --release
 ```
 
-This saves tokens: the agent only reads the sub-module for the flag you used, not the entire skill.
+This saves tokens: the agent only reads the sub-module for the flag you used.
+
+---
 
 ## Validation Checklist
 
@@ -134,9 +129,7 @@ Before submitting a new skill:
 
 > [!TIP]
 > Look at existing skills for reference. `skill-search` is a good minimal example (single switchable commands). `ai-router` shows a complex pipeline with sub-modules and references.
->
-> After creating your skill, run `@skill-search --list` to verify it appears in the index.
 
 ---
 
-**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
+[⬆ Back to Top](#) | [📂 Skill Index](/docs/README.md)

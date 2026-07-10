@@ -1,5 +1,9 @@
 # Diagram Conventions
 
+[📂 Skill Index](/docs/README.md) • [📂 Reference](/docs/reference/conventions.md)
+
+---
+
 ## Recommended `%%{init}%%` Directive
 
 Place this at the **very top** of every Mermaid fenced code block, before any diagram content:
@@ -9,6 +13,8 @@ Place this at the **very top** of every Mermaid fenced code block, before any di
 ```
 
 This directive constrains diagram rendering so it never exceeds the container width and maintains proper aspect ratio.
+
+---
 
 ## Examples
 
@@ -48,10 +54,15 @@ classDiagram
     Animal <|-- Dog
 ```
 
+---
+
 ## Rule
 
 > The `%%{init}%%` directive **must** be the first line of every Mermaid fenced code block. Without it, diagrams may render oversized or overflow their container.
 
+> [!WARNING]
+> Without the `%%{init}%%` directive, Mermaid diagrams in rendered Markdown may overflow their container and break page layout. Always include it as the first line of every diagram block.
+
 ---
 
-**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
+[⬆ Back to Top](#) | [📂 Skill Index](/docs/README.md)

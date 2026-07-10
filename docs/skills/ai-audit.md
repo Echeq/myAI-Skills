@@ -1,61 +1,53 @@
 # ai-audit
 
-Lightweight interactive code quality auditor. Scans files for security, performance, maintainability, best practices, and documentation issues with regression tracking and confidence scoring.
+> **Trigger:** `@ai-audit` | **Tools:** Read, Glob, Grep, Bash, Write | **Category:** Code Quality
 
-> **Trigger:** `@ai-audit` | `@ai-audit --full` | `@ai-audit --fix` | `@ai-audit --list` | `@ai-audit --diff`
-
-## Quick Start
-
-1. Type `@ai-audit` to start an interactive audit.
-2. The agent asks: scope (whole repo or dir) → depth (quick or deep) → categories (all, security, security+perf).
-3. The scan runs and returns findings grouped by severity with a health score (A–D).
-4. Report saved to `docs/ai-audit/AUDIT_REPORT_{date}.md`.
-
-**Example:** `@ai-audit` → whole repo → deep → all categories → 5 findings found, score 72 (B).
-
-## Description
-
-Reads source files and detects patterns across 5 weighted categories: Security (35%), Performance (20%), Maintainability (20%), Best Practices (15%), Documentation (10%). Tracks regression between audits via `.agents/memory/ai-audit/last-audit.json`. Findings include confidence levels — pattern match (70%), file read confirmed (85%), cross-referenced (95%). Low-confidence findings are labeled `[unverified]`.
-
-## Usage
-
-| Command | Action |
-| :--- | :--- |
-| `@ai-audit` | Interactive: scope → depth → categories → scan → findings → report |
-| `@ai-audit --full` | Deep scan all categories, no questions, with regression check |
-| `@ai-audit --fix` | Auto-fix Critical and High findings from the last report |
-| `@ai-audit --diff` | Compare last 2 reports: new/fixed changes, score delta |
-| `@ai-audit --list` | Show past audits with date, score, grade |
-
-## Configuration
-
-| Item | Details |
-| :--- | :--- |
-| Report output | `/docs/ai-audit/AUDIT_REPORT_{DATE}.md` |
-| Regression memory | `.agents/memory/ai-audit/last-audit.json` (auto-created, gitignored) |
-| Language adaptation | TypeScript, JavaScript, Python, Markdown — checks adapt per language |
-| Quick mode | Uses grep patterns for fast scanning |
-| Deep mode | Reads every file for thorough analysis |
-
-### Scoring
-
-Score = Security × 0.35 + Performance × 0.20 + Maintainability × 0.20 + Best Practices × 0.15 + Documentation × 0.10.
-
-| Grade | Range |
-| :--- | :--- |
-| A | ≥ 90 |
-| B | ≥ 70 |
-| C | ≥ 50 |
-| D | < 50 |
-
-> [!NOTE]
-> This is a pattern-based static analysis skill. It reads files directly — no external tools needed. It does not execute code.
-
-> [!TIP]
-> Run `@ai-config --check` first to validate repo structure, then `@ai-audit` for deeper code quality analysis.
+[📂 Skill Index](/docs/README.md) → **ai-audit**
 
 ---
 
-**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
+## Quick Reference
 
-<!-- Last updated: 2026-07-10 via @ai-docs update -->
+| Mode | Trigger | What happens |
+|:-----|:--------|:-------------|
+| Interactive | `@ai-audit` | 6-step interview: scope → depth → categories → scan → findings → report |
+| Full | `@ai-audit --full` | Deep scan all categories, no questions, with regression check |
+| Auto-fix | `@ai-audit --fix` | Auto-corrects High + Critical findings from last report |
+| Diff | `@ai-audit --diff` | Compare last 2 reports, show what changed (new/fixed/regressed) |
+| List | `@ai-audit --list` | Show past audits with date, score, grade |
+
+> [!TIP]
+> Run `@ai-audit` (bare) for the full interactive wizard. Use `--full` for a quick no-questions scan.
+
+## Overview
+
+Lightweight interactive code quality auditor. Scans files for security, performance, maintainability, best practices, and documentation issues with regression tracking and confidence scoring. Each audit saves a baseline to `.agents/memory/ai-audit/` so subsequent runs can detect improvement or regression.
+
+## Commands
+
+| Flag | Description |
+|:-----|:------------|
+| `(bare)` | Interactive 6-step wizard: scope, depth, categories, language, scan, findings |
+| `--full` | Deep scan all categories, no interaction, with automatic regression check |
+| `--fix` | Auto-fix High and Critical findings from the most recent report |
+| `--list` | Display history of past audits with date, score, and grade |
+| `--diff` | Compare the two most recent audit reports for changes |
+
+## Audit Categories
+
+| Category | Weight | Severity scale |
+|:---------|-------:|:---------------|
+| Security | 35% | 🔴 Critical 10 / 🟠 High 5 / 🟡 Medium 2 / 🔵 Low 1 |
+| Performance | 20% | Same scale |
+| Maintainability | 20% | Same scale |
+| Best Practices | 15% | Same scale |
+| Documentation | 10% | Same scale |
+
+Score = Security×.35 + Perf×.20 + Maint×.20 + BestP×.15 + Docs×.10. Grade: A ≥ 90, B ≥ 70, C ≥ 50, D < 50.
+
+> [!NOTE]
+> After each audit, the last score and finding count are saved to `.agents/memory/ai-audit/last-audit.json` for regression comparison. Reports are written to `/docs/ai-audit/AUDIT_REPORT_{DATE}.md`.
+
+---
+
+[⬆ Back to Top](#) | [📂 Skill Index](/docs/README.md)

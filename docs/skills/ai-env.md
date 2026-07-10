@@ -1,49 +1,41 @@
 # ai-env
 
-Environment configuration manager. Scans code for env vars, generates `.env.example`, updates `.gitignore`, validates `.env` files, and detects hardcoded secrets.
+> **Trigger:** `@ai-env` | **Tools:** Read, Write, Bash, Glob, Grep | **Category:** Configuration
 
-> **Trigger:** `@ai-env` | `@ai-env --scan` | `@ai-env --init` | `@ai-env --validate` | `@ai-env --audit`
-
-## Quick Start
-
-1. Type `@ai-env` to scan your project for environment variables.
-2. The skill finds all `process.env.X`, `os.getenv()`, and `.env` references in your code.
-3. Choose to init: `.env.example` + `.gitignore` update + `docs/ENVIRONMENT.md` generated in one step.
-4. Later, run `@ai-env --validate` to check that your `.env` matches the example.
-
-**Example:** `@ai-env` → scans 12 files → finds 8 env vars → `--init` → creates `.env.example`, adds `.env` to `.gitignore`, generates `docs/ENVIRONMENT.md`.
-
-## Description
-
-Manages the full lifecycle of environment configuration. Scans code for env var usage (Node `process.env`, Python `os.getenv`, Go `os.Getenv`, etc.), generates `.env.example` with grouped and documented vars, updates `.gitignore` to exclude `.env` files, creates `docs/ENVIRONMENT.md` reference, and audits for hardcoded secrets. Never reads actual `.env` values — only detects variable names.
-
-## Usage
-
-| Command | Action |
-| :--- | :--- |
-| `@ai-env` | Interactive: scan, review vars, optionally init |
-| `@ai-env --scan` | List all env vars found with file locations |
-| `@ai-env --init` | Generate `.env.example` + update `.gitignore` + create `docs/ENVIRONMENT.md` |
-| `@ai-env --validate` | Compare `.env` against `.env.example` for missing/extra/stale vars |
-| `@ai-env --audit` | Deep scan: committed `.env` files, hardcoded secrets, git history leaks |
-
-## Configuration
-
-| File | Purpose | Git |
-| :--- | :--- | :--- |
-| `.env.example` | Documented template of all required vars | Commit |
-| `.gitignore` | Updated to exclude `.env`, `.env.local`, `.env.*.local` | Already tracked |
-| `docs/ENVIRONMENT.md` | Human-readable reference for setup | Commit |
-| `.env` | Actual values (never read by the skill) | Never commit |
-
-> [!WARNING]
-> The skill never reads or outputs actual `.env` values. Scan only detects variable NAMES. Audit checks for the PRESENCE of committed env files, not their contents. Hardcoded secrets found in code are flagged with file:line but values are masked in the report.
-
-> [!TIP]
-> Run `@ai-env --init` on any new project before writing code — it catches missing vars early.
+[📂 Skill Index](/docs/README.md) → **ai-env**
 
 ---
 
-**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
+## Quick Reference
 
-<!-- Last updated: 2026-07-10 via @ai-docs update -->
+| Mode | Trigger | What happens |
+|:-----|:--------|:-------------|
+| Interactive | `@ai-env` | Scan code for env vars, then offer actions |
+| Scan | `@ai-env --scan` | Scan project code for environment variable references |
+| Init | `@ai-env --init` | Generate `.env.example` + update `.gitignore` + create `docs/ENVIRONMENT.md` |
+| Validate | `@ai-env --validate` | Compare `.env` against `.env.example` for missing or extra vars |
+| Audit | `@ai-env --audit` | Scan for hardcoded secrets, tokens, and credentials in code |
+
+> [!TIP]
+> Run `@ai-env --init` early in a project to establish the canonical env var list and prevent secret leakage.
+
+## Overview
+
+Environment configuration manager. Scans code for environment variable references, generates `.env.example`, updates `.gitignore`, validates `.env` files against the example, and audits for hardcoded secrets. Never reads or exposes actual `.env` file values.
+
+## Commands
+
+| Flag | Description |
+|:-----|:------------|
+| `(bare)` | Interactive: scan code for env vars, then choose next action |
+| `--scan` | Scan project code for all `process.env.X`, `os.getenv()`, and `.env` references |
+| `--init` | One-step setup: generate `.env.example` + update `.gitignore` + create `docs/ENVIRONMENT.md` |
+| `--validate` | Check that `.env` matches `.env.example` (no missing or extra vars) |
+| `--audit` | Scan for hardcoded secrets, tokens, API keys, and credentials |
+
+> [!WARNING]
+> This skill NEVER reads actual `.env` file values. It only checks that variable names exist. Secret values are never exposed, logged, or stored.
+
+---
+
+[⬆ Back to Top](#) | [📂 Skill Index](/docs/README.md)

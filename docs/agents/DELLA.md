@@ -1,9 +1,13 @@
-# DELLA
+# DELLA Agent
 
-Strategic planning consultant. Reads project context, analyzes available capabilities, and produces adaptive execution plans with workflow composition, skill chaining, and handoff instructions.
+> Strategic planning consultant. Reads project context, analyzes available capabilities, and produces adaptive execution plans with workflow composition, skill chaining, and handoff instructions.
 
-> **File:** `agent/DELLA.md`
-> **Acronym:** **D**iscover → **E**xamine → **L**ink → **L**ayout → **A**ssess
+**File:** `agent/DELLA.md`
+**Acronym:** **D**iscover → **E**xamine → **L**ink → **L**ayout → **A**ssess
+
+[📂 Agent Index](/docs/agents/README.md) → **DELLA**
+
+---
 
 ## Quick Start
 
@@ -11,13 +15,17 @@ Strategic planning consultant. Reads project context, analyzes available capabil
 2. No setup required — DELLA needs no sub-agents, no `--init`, no `opencode.json` modifications
 3. Invoke DELLA with a description of what you need to accomplish
 
-**Example:** `@DELLA` → reads AGENTS.md → scans agents and skills → maps your request → produces a plan at `docs/DELLA_PLAN/plan_2026-07-10_001.md`.
+**Example:** `@DELLA` → reads AGENTS.md → scans agents and skills → maps your request → produces a plan at `docs/DELLA_PLAN/plan_YYYY-MM-DD_nnn.md`.
 
-## Description
+---
+
+## Overview
 
 DELLA is a **read-only, planning-only strategic consultant**. Unlike ROUTER (which executes) and ORCHESTRATOR (which orchestrates execution), DELLA only produces plans. It never writes source code, delegates to sub-agents, or executes tasks. Its sole output is a structured plan document in `docs/DELLA_PLAN/`.
 
-DELLA follows a 5-phase methodology: Discover, Examine, Link, Layout, Assess.
+DELLA follows a 5-phase methodology: **D**iscover, **E**xamine, **L**ink, **L**ayout, **A**ssess.
+
+---
 
 ## The D.E.L.L.A. Methodology
 
@@ -41,8 +49,8 @@ Builds a complete inventory of available capabilities.
 
 Maps the user's request against the capability inventory.
 
-1. **Request classification**: Parses the user's request into discrete components (e.g., "audit code", "generate docs", "commit changes")
-2. **Capability matching**: For each component, finds the best matching agent or skill using keyword heuristics (e.g., "audit" → ai-audit, "commit" → ai-git)
+1. **Request classification**: Parses the user's request into discrete components
+2. **Capability matching**: For each component, finds the best matching agent or skill using keyword heuristics
 3. **Gap analysis**: Identifies request components with no matching capability and flags them as manual steps
 4. **Confidence scoring**: High (direct match), Medium (partial match), Low (weak match), Gap (no match)
 
@@ -54,9 +62,9 @@ Designs the workflow structure and plan document.
    - Determines natural prerequisites and ordering
    - Identifies parallelizable steps
    - Applies adaptive branching (if/then paths based on intermediate results)
-2. **Workflow pattern selection**: Matches the request to a known catalog pattern (Audit→Fix→Document→Commit, Parallel Audit Gate, Bootstrap→Validate→Doc, etc.)
+2. **Workflow pattern selection**: Matches the request to a known catalog pattern
 3. **Fallback planning**: For each step, defines what to do if the primary skill/agent is unavailable
-4. **Plan template**: Assembles the full document with Objective, Context Summary, Capability Mapping, Workflow Diagram (Mermaid), Subtask Breakdown, Parallel Blocks, Adaptive Branching, Risks, and Handoff Instructions
+4. **Plan template**: Assembles the full document with Objective, Context Summary, Capability Mapping, Workflow Diagram, Subtask Breakdown, Parallel Blocks, Adaptive Branching, Risks, and Handoff Instructions
 
 ### A — Assess
 
@@ -74,10 +82,12 @@ Reviews the plan for quality, completeness, and safety.
 2. **Risk assessment**: Probability × Impact scoring per risk
 3. **Edge case handling**: No AGENTS.md, no skills, vague requests, plan file collisions
 
-## Cardinal Rule
+---
+
+## When to Use DELLA
 
 | If you need to... | Use this |
-|---|---|
+|:------------------|:---------|
 | Understand what's possible in this project | **DELLA** |
 | Plan a multi-step workflow chaining multiple skills | **DELLA** |
 | Get an adaptive plan with fallback alternatives | **DELLA** |
@@ -86,16 +96,16 @@ Reviews the plan for quality, completeness, and safety.
 | Orchestrate complex dependency chains | **ORCHESTRATOR** |
 | Audit code, generate docs, commit code | **Specific skill** |
 
+---
+
 ## Plan Output
 
 Plans are saved to `docs/DELLA_PLAN/plan_YYYY-MM-DD_nnn.md` with auto-incrementing sequence numbers.
 
 ### Plan Structure
 
-Every plan contains these sections:
-
 | Section | Content |
-|---|---|
+|:--------|:--------|
 | **Header** | Date, AI model, version, source request |
 | **Objective** | One or two sentences describing what the plan achieves |
 | **Context Summary** | Project name, AGENTS.md status, available agents and skills |
@@ -109,4 +119,7 @@ Every plan contains these sections:
 
 ---
 
-**[⬆ Back to Top](#)** | **[📂 Agent Index](/docs/agents/README.md)**
+> [!TIP]
+> DELLA reads the `<!-- DELLA-CONTEXT -->` marker in `AGENTS.md` for quick context. If the marker is absent, DELLA reads the full file.
+
+[⬆ Back to Top](#) | [📂 Agent Index](/docs/agents/README.md) | [📂 Skill Index](/docs/README.md)

@@ -1,8 +1,12 @@
-# ORCHESTRATOR
+# ORCHESTRATOR Agent
 
-Intelligent task orchestrator. Classifies requests by intent, decomposes them into a DAG of subtasks with dependency resolution, executes via a formal state machine, and auto-routes to the best available skill or agent.
+> Intelligent task orchestrator. Classifies requests by intent, decomposes them into a DAG of subtasks with dependency resolution, executes via a formal state machine, and auto-routes to the best available skill or agent.
 
-> **File:** `agent/ORCHESTRATOR.md`
+**File:** `agent/ORCHESTRATOR.md`
+
+[📂 Agent Index](/docs/agents/README.md) → **ORCHESTRATOR**
+
+---
 
 ## Quick Start
 
@@ -10,17 +14,23 @@ Intelligent task orchestrator. Classifies requests by intent, decomposes them in
 2. Run `@ai-orchestrator --init` to write `opencode.json` with the 4 required sub-agents
 3. Restart OpenCode
 
-## Description
+---
+
+## Overview
 
 ORCHESTRATOR uses **dynamic classification** via a structured LLM prompt that outputs `{mode, confidence, capabilities_needed, suggested_skills}`. It maintains a **capability registry** of all installed skills for automatic routing. For plan-mode, it builds a formal Directed Acyclic Graph (DAG) with an 8-state task machine, cascade failure propagation, and deadlock detection — all managed by a Python CLI engine (`dag.py`, stdlib only).
+
+---
 
 ## Pipeline Modes
 
 | Mode | Trigger | Execution |
-|---|---|---|
+|:-----|:--------|:----------|
 | **quick** | Default for short requests | executor(flash) → review(flash or skip) |
 | **plan** | Classifier (intent-based) | classifier → registry → planner → DAG engine → executor/skill → review(adaptive) → fix loop |
 | **debug** | "error", "fail", "bug" | read → executor → review(flash) → fix → log |
+
+---
 
 ## Key Features
 
@@ -32,15 +42,19 @@ ORCHESTRATOR uses **dynamic classification** via a structured LLM prompt that ou
 - **Cancel without cascade**: `cancel <id>` stops a task without cascading (dependents become deadlock-detected)
 - **Retry with reversion**: Failed tasks can be retried, reverting cascade-failed dependents back to BLOCKED
 
+---
+
 ## Differences from ROUTER
 
 | Aspect | ROUTER | ORCHESTRATOR |
-|---|---|---|
+|:-------|:-------|:-------------|
 | Mode detection | Keyword heuristics | LLM-based + fallback |
 | Execution model | Linear pipeline | DAG with dependency resolution |
 | Skill routing | Manual via subtask hints | Auto via capability registry |
 | State machine | None (sequential) | 8-state FSM + cascade + deadlock |
 | Parallel execution | No | Yes (independent subtasks) |
+
+---
 
 ## DAG Engine
 
@@ -57,8 +71,11 @@ python dag.py status             # Print human-readable state table
 python dag.py dump               # Print full task_states.json
 ```
 
-States: READY, RUNNING, BLOCKED, COMPLETED, FAILED, CANCELLED, SKIPPED, PAUSED
+States: **READY** → **RUNNING** → **COMPLETED** | **FAILED** | **CANCELLED** | **SKIPPED** | **PAUSED** → **BLOCKED** → **READY**
 
 ---
 
-**[⬆ Back to Top](#)** | **[📂 Agent Index](/docs/agents/README.md)**
+> [!NOTE]
+> ORCHESTRATOR is more complex than ROUTER. Use it only when your task needs dependency management, parallel execution, or cascade failure handling.
+
+[⬆ Back to Top](#) | [📂 Agent Index](/docs/agents/README.md) | [📂 Skill Index](/docs/README.md)

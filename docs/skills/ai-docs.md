@@ -1,63 +1,56 @@
 # ai-docs
 
-Generates, updates, and audits Markdown documentation in `/docs/`. Also handles AI interaction logs via the `--log` sub-module.
+> **Trigger:** `@ai-docs` | **Tools:** Read, Write, Bash, Glob, Grep | **Category:** Documentation
 
-> **Trigger:** `@ai-docs` | `@ai-docs pro` | `@ai-docs update` | `@ai-docs audit` | `@ai-docs --log`
+[📂 Skill Index](/docs/README.md) → **ai-docs**
 
-## Quick Start
+---
+
+## Quick Reference
 
 | Mode | Trigger | What happens |
-| :--- | :--- | :--- |
+|:-----|:--------|:-------------|
 | Generate | `@ai-docs` | Rebuilds skill index + all per-skill pages from `.agents/skills/` |
-| Deep-dive | `@ai-docs pro <dir>` | Architectural doc with ADR, complexity, edge cases |
+| Deep-dive | `@ai-docs pro <dir>` | Architectural doc with ADR, complexity analysis, and edge cases |
 | Update | `@ai-docs update <name>` | Incremental update of one skill page (preserves manual edits) |
 | Audit | `@ai-docs audit` | Compliance check with weighted score, saved to `/docs/audit/` |
 | Log | `@ai-docs --log` | Log AI interaction to `docs/log/AI-LOG-*.md` |
 
-**Example:** `@ai-docs` → all docs regenerated in ~10s. `@ai-docs audit` → score report generated.
+> [!TIP]
+> Use `@ai-docs update <name>` to update a single page without overwriting manual sections marked with `<!-- MANUAL -->`.
 
-## Description
+## Overview
 
-Documentation lifecycle agent with 5 modes: full generation, professional deep-dive, incremental update, compliance audit, and AI interaction logging. Operates entirely in `/docs/`. Reads skill definitions from `.agents/skills/<name>/SKILL.md`. Follows documentation standards: professional English, consistent heading hierarchy, table alignment, code language labels, Mermaid diagram sizing directives, and cross-links on every page.
+Documentation lifecycle agent with 5 modes: full generation, professional deep-dive, incremental update, compliance audit, and AI interaction logging. Operates entirely in `/docs/`. Reads skill definitions from `.agents/skills/<name>/SKILL.md`.
 
-## Usage
+## Commands
 
-| Mode | Trigger | Output |
-| :--- | :--- | :--- |
-| Standard | `@ai-docs` | `/docs/README.md` + `/docs/skills/<name>.md` |
-| Professional | `@ai-docs pro <dir>` | Single deep-dive `.md` with ADR, complexity, deps, edge cases |
-| Update | `@ai-docs update <name>` | Updated `/docs/skills/<name>.md` (preserves `<!-- MANUAL -->` blocks) |
-| Audit | `@ai-docs audit` | `/docs/audit/DOCS_AUDIT_REPORT.md` (score 0–100%) |
-| Log | `@ai-docs --log` | `docs/log/AI-LOG-{date}-{time}-{pc}.md` |
+| Flag | Description |
+|:-----|:------------|
+| `(bare)` | Full regenerate: rebuild `/docs/README.md` + all `/docs/skills/<name>.md` |
+| `pro <dir>` | Generate a deep-dive architecture doc with ADR, complexity, deps, and edge cases |
+| `update <name>` | Incremental update of one skill page. Preserves `<!-- MANUAL -->` and `<!-- CUSTOM -->` blocks |
+| `audit` | Compliance audit → `/docs/audit/DOCS_AUDIT_REPORT.md` with weighted score |
+| `--log` | Log AI interaction to `docs/log/AI-LOG-{date}-{time}-{pc}.md` |
+| `--log --list` | List all AI interaction log files |
+| `--log --search <q>` | Search logs for a keyword or phrase |
+| `--log --last` | Show the most recent log entry |
+| `--log --no-prompt` | Log without asking for context |
+| `--log --compact` | Log in compact format (single line) |
 
-## Configuration
-
-| Path | Purpose |
-| :--- | :--- |
-| `.agents/skills/<name>/SKILL.md` | Source of truth — frontmatter drives doc generation |
-| `/docs/README.md` | Skill index (auto-generated) |
-| `/docs/skills/<name>.md` | Per-skill doc pages (auto-generated) |
-| `/docs/audit/` | Audit reports |
-| `/docs/log/` | AI interaction logs |
-
-### Audit Scoring
+## Audit Scoring
 
 | Severity | Weight | Checks |
-| :--- | :--- | :--- |
+|:---------|-------:|:-------|
 | 🔴 Critical | 40% | Missing doc page, broken links, non-English, index missing skills |
-| 🟡 Warning | 30% | Wrong heading order, missing table alignment, no code lang, paragraphs > 5 lines, names not clickable |
+| 🟡 Warning | 30% | Wrong heading order, missing table alignment, no code lang, paragraphs > 5 lines |
 | 🔵 Suggestion | 30% | Missing admonitions, missing cross-links |
 
-Score = Critical% + Warning% + Suggestion%. PASS if ≥ 80%.
+PASS if score ≥ 80%. `--fix` auto-corrects Warnings and Suggestions.
 
 > [!NOTE]
-> Standard mode regenerates ALL skill pages. Manual edits are overwritten unless protected with `<!-- MANUAL -->` comment blocks.
-
-> [!TIP]
-> Use `@ai-docs pro <dir>` for deep-dive architecture docs with ADRs and dependency graphs. Use `@ai-docs update <name>` for targeted updates without regeneration.
+> `@ai-docs update` is the safe incremental mode — it never overwrites content between `<!-- MANUAL -->` or `<!-- CUSTOM -->` comment blocks. Use full `@ai-docs` only when you want a complete regenerate.
 
 ---
 
-**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
-
-<!-- Last updated: 2026-07-10 via @ai-docs update -->
+[⬆ Back to Top](#) | [📂 Skill Index](/docs/README.md)
