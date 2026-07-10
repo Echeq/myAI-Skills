@@ -36,7 +36,7 @@ The orchestrator builds a formal **Directed Acyclic Graph (DAG)** for plan-mode 
 ### DAG Engine Commands
 
 | Command | Purpose |
-|---------|---------|
+| :--- | :--- |
 | `python dag.py init plan_input.json` | Load plan, validate DAG, build state machine |
 | `python dag.py run` | Pop next READY task or signal done/deadlock |
 | `python dag.py complete <id>` | Mark task COMPLETED, unblock dependents |
@@ -72,7 +72,7 @@ Requires four subagents configured in `opencode.json` (run `@ai-orchestrator --i
 ### Task-Adaptive Review
 
 | Task type | Review focus |
-|-----------|-------------|
+| :--- | :--- |
 | `code-generation` | Correctness, style, edge cases |
 | `security` | Injection flaws, secrets, auth |
 | `documentation` | Completeness, formatting, links |

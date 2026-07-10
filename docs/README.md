@@ -113,6 +113,6 @@ flowchart LR
 
 ---
 
-**[⬆ Back to Top](#)** | **[📂 Root README](/README.md)**
+**[⬆ Back to Top](#)** | **[📂 Skill Index](/docs/README.md)**
 
 <!-- Last updated: 2026-07-10 via @ai-docs update -->
