@@ -1,8 +1,8 @@
 # ai-router
 
-Routes complex tasks by planning, delegating to specialised sub-agents, and reviewing results. Supports custom model selection for each role.
+Technical pipeline engine for task routing. Implements a 3-mode pipeline (quick/plan/debug) with planner → executor → reviewer sub-agents. Called by the ROUTER agent via `skill("ai-router")`. Not user-facing.
 
-> **Trigger:** `@ai-router`
+> **Trigger:** `@ai-router` | `@ai-router --init` | `@ai-router --quick` | `@ai-router --plan` | `@ai-router --debug`
 
 ## Quick Start
 

@@ -1,9 +1,10 @@
 ---
 name: ai-orchestrator
 description: >-
-  Intelligent task orchestrator. Classifies requests by intent, decomposes
-  them into subtasks, routes each subtask to the best available agent or
-  skill, and reviews results with task-adaptive criteria.
+  DAG-based task orchestration engine. Implements dynamic classification,
+  capability registry lookup, 8-state task lifecycle, cascade failure
+  propagation, and deadlock detection. Called by the ORCHESTRATOR agent
+  via `skill("ai-orchestrator")`. Not user-facing.
 triggers:
   - "@ai-orchestrator"
   - "@ai-orchestrator --init"
@@ -13,81 +14,128 @@ triggers:
   - "@ai-orchestrator --cancel <id>"
   - "@ai-orchestrator --cancel-all"
   - "@ai-orchestrator --status"
+allowed-tools: Read, Write, Bash, Glob, Grep
 ---
 
-# AI Orchestrator Skill
+# AI Orchestrator Skill (Technical Engine)
 
-Intelligent task orchestrator. Unlike `ai-router` (fixed 3-mode pipeline),
-ai-orchestrator uses **dynamic classification** and a **capability registry**
-to route work to the right agent or skill.
-
-```
-User → Classifier → [intent + capabilities] → Registry lookup →
-  → Planner → [subtasks with skill hints] →
-  → Auto-route to skill or executor → Review → Fix loop
-```
-
-## Quick Start
-
-```
-@ai-orchestrator --init          # Interactive setup (models + capabilities)
-@ai-orchestrator                 # Auto-classify and route
-@ai-orchestrator --quick "..."   # Force quick mode
-@ai-orchestrator --plan "..."    # Force plan mode
-@ai-orchestrator --debug "..."   # Force debug mode
-```
+This is the **technical engine** behind the ORCHESTRATOR agent. It implements
+the DAG execution engine, capability registry, and 8-state task lifecycle.
+Called via `skill("ai-orchestrator")` when a task needs formal dependency
+management, parallel execution, cascade failure handling, or deadlock detection.
 
 ## Initialization
 
-If the user's message contains `--init`, run the initialization procedure from
-`references/init.md` and stop. Do not run the normal pipeline.
+If the query contains `--init`, run `references/init.md` and stop.
+Do NOT run the pipeline.
 
 ## Prerequisites
 
-Requires four sub-agents configured in `opencode.json`:
-- `ai-orchestrator-planner` — strategic planning (prompt: `references/manager.md`)
-- `ai-orchestrator-executor` — code/task execution (prompt: `references/worker.md`)
-- `ai-orchestrator-reviewer` — full review (prompt: `references/supervisor.md`, model: pro)
-- `ai-orchestrator-reviewer-flash` — lightweight review (prompt: `references/supervisor-lite.md`, model: flash)
+Requires four sub-agents configured in `opencode.json` (run
+`@ai-orchestrator --init`):
 
-Run `@ai-orchestrator --init` to generate the configuration interactively.
+| Sub-agent | Role | Prompt file | Recommended model |
+|-----------|------|-------------|-------------------|
+| `ai-orchestrator-planner` | Strategic planning, dep types | `references/manager.md` | Pro |
+| `ai-orchestrator-executor` | Code/task execution | `references/worker.md` | Flash |
+| `ai-orchestrator-reviewer` | Full review (plan mode) | `references/supervisor.md` | Pro |
+| `ai-orchestrator-reviewer-flash` | Lightweight review (quick/debug) | `references/supervisor-lite.md` | Flash |
+
+Also requires `dag.py` at `.agents/skills/ai-orchestrator/dag.py` (stdlib-only
+Python CLI, no dependencies).
+
+## Pipeline Modes
+
+### Quick Mode (simple tasks)
+
+```
+ai-orchestrator-executor (flash) → ai-orchestrator-reviewer-flash (always)
+```
+
+1. Delegate to **ai-orchestrator-executor** via `task`.
+2. Review with **ai-orchestrator-reviewer-flash** (always — even trivial tasks
+   get a security scan).
+3. If REJECTED: fix loop (up to `max_iterations=3`):
+   - Attempt 1: same executor (flash)
+   - Attempts 2-3: escalate to planner (pro) as executor
+4. Log to `.agents/memory/ai-orchestrator/assets/state/history.md`.
+
+### Plan Mode (multi-step with dependencies)
+
+```
+Dynamic classifier → Capability registry → Planner → DAG engine →
+Executor/skill loop → Adaptive review → Fix loop → Log
+```
+
+1. **Dynamic classification**: extract `{mode, confidence, capabilities_needed,
+   suggested_skills}`. If confidence < 0.6, escalate to user.
+2. **Registry lookup**: match capabilities against installed skills.
+3. Send to **ai-orchestrator-planner** with classification context.
+4. Planner returns structured plan with subtasks, dependencies, dep types.
+5. **Parse plan** → convert to `plan_input.json` (see `references/parse_plan.md`).
+6. **Init DAG**: `bash: python dag.py init .agents/memory/ai-orchestrator/assets/plan/plan_input.json`
+7. **Execute loop**: repeatedly call `bash: python dag.py run`:
+   - `NEXT <id> "<label>"` → delegate to executor or skill, then
+     `dag.py complete <id>` or `dag.py fail <id> "<error>"`
+   - `WAIT` → tasks running, poll again
+   - `DEADLOCK <ids>` → deadlocked tasks auto-failed
+   - `ALL_DONE` → execution complete
+8. **Review**: each output reviewed with task-adaptive criteria.
+9. If REJECTED:
+   - [minor] → fix with executor (flash), escalate to pro on 2nd rejection
+   - [major] → fix with planner (pro) immediately
+10. Log to `.agents/memory/ai-orchestrator/assets/state/history.md`.
+
+### Debug Mode (fixing errors)
+
+```
+Read → ai-orchestrator-executor → ai-orchestrator-reviewer-flash → fix → log
+```
+
+1. Read relevant files.
+2. Delegate to **ai-orchestrator-executor** with error context.
+3. Review with **ai-orchestrator-reviewer-flash**.
+4. Apply fix.
+5. Log to `.agents/memory/ai-orchestrator/assets/state/history.md`.
 
 ## Dynamic Classification
 
-Replaces ai-router's 3 hardcoded keyword modes with a structured prompt
-that outputs:
+Use a structured prompt to classify, not keyword heuristics:
 
 ```yaml
 mode: plan                    # quick | plan | debug
 confidence: 0.85              # 0.0 - 1.0
-capabilities_needed:          # what this task needs
+capabilities_needed:
   - code-generation
-  - testing
-suggested_skills:             # skills that can help
+  - database
+suggested_skills:
   - ai-git
 ```
 
-**Classification prompt rules:**
-- If confidence < 0.6 → escalate to user: "I'm not sure how to route this.
-  Is it quick (simple), plan (multi-step), or debug (fix something)?"
-- If the request mentions an existing skill by trigger (e.g. "audit this code")
-  → auto-route to that skill directly, skip the pipeline.
-- If the request spans multiple domains (e.g. "audit and document")
-  → break into parallel tracks.
+**Rules:**
+- Confidence < 0.6 → escalate: "I'm not sure how to route this. Is it
+  quick (simple), plan (multi-step), or debug (fix something)?"
+- Mentions an existing skill trigger → auto-route directly, skip pipeline.
+- Spans multiple domains → break into parallel tracks.
+
+**Fallback** (if prompt classifier unavailable):
+- "error"/"fail"/"bug" → debug
+- action verbs or length > 150 → plan
+- otherwise → quick
 
 ## Capability Registry
 
-Each installed skill declares its capabilities in frontmatter.
-The orchestrator discovers them at runtime:
+Each installed skill declares capabilities. The orchestrator discovers them
+at runtime:
 
 ```yaml
-# Example from ai-audit/SKILL.md
+# In skill frontmatter:
 capabilities:
-  domains: [code-review, security, performance, documentation]
-  environments: [python, javascript, typescript, shell, markdown]
+  domains: [code-review, security, documentation]
+  environments: [python, javascript]
 ```
 
-**Built-in taxonomy** (see `references/config.md` for full list):
+**Taxonomy** (see `references/config.md` for full list):
 
 | Domain | Examples |
 |--------|----------|
@@ -101,101 +149,69 @@ capabilities:
 | `architecture` | System design, planning |
 
 **Matching logic:**
-1. Classifier extracts `capabilities_needed` from the request
-2. Registry matches against all installed skills' `capabilities`
-3. Best match (highest overlap) gets routed via `skill()` before execution
-4. If no match → use generic executor
-
-## Pipeline Flow
-
-### Quick Mode (simple tasks)
-1. Delegate to **ai-orchestrator-executor** via `task`
-2. Review with **ai-orchestrator-reviewer-flash** (always — no skip)
-   - Even for trivial/read-only tasks, run the flash review to catch security issues
-   - If the reviewer returns APPROVED with no issues → log and return
-   - If REJECTED → fix and re-run (up to max_iterations=3):
-     - First fix attempt: use ai-orchestrator-executor (flash) — same as original execution
-     - Second and third fix attempts: escalate to ai-orchestrator-planner (pro) as executor — flash model likely reproduces same error
-     - If all iterations exhausted → mark task FAILED and escalate to user
-3. Log to .agents/memory/ai-orchestrator/assets/state/history.md
-
-### Plan Mode (multi-step tasks)
-1. **Dynamic classification** → extract intent + capabilities
-2. **Registry lookup** → identify which skills/agents can help
-3. Send to **ai-orchestrator-planner** with classification context
-4. Planner returns structured subtasks with skill hints
-5. For each subtask:
-   - If a skill hint matches → `skill("name")` to load it, delegate
-   - Otherwise → **ai-orchestrator-executor**
-6. Review with **ai-orchestrator-reviewer** (task-adaptive criteria)
-7. If REJECTED → severity-based fix loop with model escalation:
-   - [minor] → fix with ai-orchestrator-executor (flash), but if rejected again, escalate to pro
-   - [major] → fix with ai-orchestrator-planner (pro) immediately
-   - After 2 consecutive rejections (regardless of severity), always use pro executor
-8. Log to `.agents/memory/ai-orchestrator/assets/state/history.md`
-
-### Debug Mode (fixing errors)
-1. Read relevant files / search
-2. Delegate to **ai-orchestrator-executor** with error context
-3. Review with **ai-orchestrator-reviewer-flash**
-4. Apply fix, log to `history.md`
+1. Classifier extracts `capabilities_needed`
+2. Registry matches against installed skills' `capabilities`
+3. Best match → route via `skill()` before execution
+4. No match → use generic executor
 
 ## DAG Execution Engine
 
-For **plan mode**, the orchestrator uses a formal Directed Acyclic Graph (DAG)
-execution engine with an 8-state machine per subtask. See full design in
-`.agents/memory/ai-orchestrator/assets/plan/Plan_task_lifecycle.md`.
+Powered by `dag.py` (stdlib only, no deps).
 
-### Pipeline (Phase 1 — DAG only, no priorities)
+### 8-State Machine
 
-1. **Plan** — Planner returns Markdown plan with subtasks, dependencies, and dep types
-2. **Parse** — Orchestrator converts Markdown plan to `plan_input.json` (see `references/parse_plan.md`)
-3. **Init DAG** — `bash: python dag.py init plan_input.json` — validates DAG (cycle detection), builds graph
-4. **Execute loop** — Repeatedly call `bash: python dag.py run`:
-   - `NEXT <id> "<label>"` — delegate to executor sub-agent, then report `dag.py complete <id>` or `dag.py fail <id> "<error>"`
-   - `WAIT` — tasks are RUNNING, poll again shortly
-   - `DEADLOCK <ids>` — tasks auto-failed (dependency was CANCELLED/FAILED — cannot proceed)
-   - `ALL_DONE` — execution complete
-5. **Review** — Each executor output reviewed per task-adaptive criteria
-6. **Cascade** — On `fail`, `dag.py` automates transitive cascade failure to dependents
-7. **Cancel** — `@ai-orchestrator --cancel <id>` calls `dag.py cancel <id>` (NO cascade)
-8. **Cancel all** — `@ai-orchestrator --cancel-all` — cancels all non-terminal tasks
-9. **Status** — `@ai-orchestrator --status` calls `dag.py status` — displays current state table
-10. **Log** — Results appended to `.agents/memory/ai-orchestrator/assets/state/history.md`
+```
+READY ──→ RUNNING ──→ COMPLETED (terminal)
+                  └──→ FAILED ──→ READY (retry)
+                  └──→ PAUSED ──→ RUNNING (resume)
+BLOCKED ──→ READY (deps resolved)
+        └──→ FAILED (cascade or deadlock)
+FAILED ──→ READY (retry) ──→ revert cascade dependents to BLOCKED
+CANCELLED (terminal, NO cascade)
+SKIPPED (terminal)
+```
 
-### State Machine
+**Key rules:**
+- FAILED is retryable (not terminal). Terminal only when retries exhausted.
+- CANCELLED does NOT cascade. Dependents may deadlock (all deps terminal,
+  not all COMPLETED).
+- Cascade is transitive BFS through all dependents.
+- Deadlock detection auto-fails BLOCKED tasks whose dependencies are all
+  terminal but not all COMPLETED.
 
-8 states: READY, RUNNING, BLOCKED, COMPLETED, FAILED, CANCELLED, SKIPPED, PAUSED.
-All transitions validated by guard function. See `Plan_task_lifecycle.md` §2 for details.
+### DAG Commands
 
-Key rules:
-- **FAILED is retryable** (not terminal). Enters terminal only when retries exhausted.
-- **CANCELLED does NOT cascade.** But dependents may deadlock (all deps terminal, not all COMPLETED).
-- **Cascade is transitive BFS** through all dependents. COMPLETED/CANCELLED/SKIPPED never reverted.
-- **Deadlock detection** auto-fails BLOCKED tasks whose ALL dependencies are terminal but NOT all COMPLETED. Prevents infinite waiting loops.
+| Command | Action |
+|---------|--------|
+| `python dag.py init <plan.json>` | Load plan, validate DAG, write state |
+| `python dag.py run` | Pop next READY task or signal done |
+| `python dag.py complete <id>` | Mark COMPLETED, unblock dependents |
+| `python dag.py fail <id> "<error>"` | Mark FAILED, cascade to dependents |
+| `python dag.py cancel <id>` | Cancel (NO cascade) |
+| `python dag.py retry <id>` | Retry FAILED, revert cascade |
+| `python dag.py status` | Print state table |
+| `python dag.py dump` | Full JSON state dump |
 
 ### Plan JSON Format
 
-The orchestrator converts the planner's Markdown into this format for `dag.py init`:
-
 ```json
 {
-  "plan_id": "2026-07-07-plan-001",
-  "objective": "Add user authentication to the app",
+  "plan_id": "2026-07-10-plan-001",
+  "objective": "Build a CLI tool",
   "tasks": [
     {
       "id": "1",
-      "label": "Design auth schema",
-      "description": "Design the database schema for user accounts.",
+      "label": "Set up project",
+      "description": "Create scaffolding",
       "dependencies": [],
       "dep_types": {}
     },
     {
       "id": "2",
-      "label": "Implement auth middleware",
-      "description": "Implement middleware that checks session tokens.",
+      "label": "Implement feature",
+      "description": "Core logic",
       "dependencies": ["1"],
-      "dep_types": {"1": "data"}
+      "dep_types": {"1": "code"}
     }
   ]
 }
@@ -203,7 +219,7 @@ The orchestrator converts the planner's Markdown into this format for `dag.py in
 
 ## Task-Adaptive Review
 
-The reviewer uses different criteria based on task type:
+Review criteria adapt to the task type:
 
 | Task type | Review focus |
 |-----------|-------------|
@@ -213,9 +229,7 @@ The reviewer uses different criteria based on task type:
 | `debugging` | Root cause addressed, no regressions |
 | `configuration` | Syntax, path correctness, security |
 
-Selected automatically from the classifier's `capabilities_needed`.
-
-## Delegating to Sub-Agents
+## Sub-Agent Delegation
 
 ```yaml
 task:
@@ -226,10 +240,11 @@ task:
 
 Same pattern for executor, reviewer, and reviewer-flash.
 
-## Invoking Other Skills
+## Skill Routing
+
+When a subtask matches a skill via the registry:
 
 ```yaml
-# Auto-routing (Phase 1): before delegating a subtask, check registry
 if skill_match:
   skill("<matched_skill>")
   task:
@@ -240,22 +255,17 @@ if skill_match:
 
 ## State & History
 
-- **`.agents/memory/ai-orchestrator/assets/state/task_states.json`** — machine-readable state persistence. Source of truth for the DAG engine. Written atomically after every transition.
-- **`.agents/memory/ai-orchestrator/assets/state/current_plan.md`** — active plan (or "No active plan." if idle)
-- **`.agents/memory/ai-orchestrator/assets/state/history.md`** — append-only log with ISO timestamp, mode, outcome
-- **`.agents/memory/ai-orchestrator/assets/plan/`** — archived plans with dated filenames
+- **`.agents/memory/ai-orchestrator/assets/state/task_states.json`** —
+  machine-readable DAG state. Source of truth. Written atomically.
+- **`.agents/memory/ai-orchestrator/assets/state/current_plan.md`** — active plan
+- **`.agents/memory/ai-orchestrator/assets/state/history.md`** — append-only log
+  (ISO timestamp, mode, outcome, summary)
+- **`.agents/memory/ai-orchestrator/assets/plan/`** — archived plans
 
-## Example Flow
+## Configuration
 
-**User:** "Audit this repo for security issues and generate a report."
-
-1. **Classifier** → `{mode: plan, confidence: 0.9, capabilities: [security, documentation], skills: [ai-audit, ai-docs]}`
-2. **Registry** → matches `ai-audit` (security), `ai-docs` (documentation)
-3. **Planner** → subtask 1: "Run security audit" (skill: ai-audit), subtask 2: "Generate report" (skill: ai-docs)
-4. **Execute** → `skill("ai-audit")` for subtask 1, `skill("ai-docs")` for subtask 2
-5. **Review** → security-adaptive criteria
-6. **Log** → success to `history.md`
-
----
-
-*ai-orchestrator v1 — Phase 1: Smart Router. Forked from ai-router.*
+See `references/config.md` for:
+- Dynamic classification rules (primary + fallback)
+- Execution limits (`timeout: 60`, `max_iterations: 3`, fix loop model escalation)
+- Capability taxonomy (full list of domains and environments)
+- DAG engine configuration (state paths, timeouts)

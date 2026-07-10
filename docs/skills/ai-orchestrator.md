@@ -1,6 +1,6 @@
 # ai-orchestrator
 
-Intelligent task orchestrator. Classifies requests by intent, decomposes them into subtasks, routes each subtask to the best available agent or skill, and reviews results with task-adaptive criteria.
+DAG-based task orchestration engine. Implements dynamic classification, capability registry lookup, 8-state task lifecycle, cascade failure propagation, and deadlock detection. Called by the ORCHESTRATOR agent via `skill("ai-orchestrator")`. Not user-facing.
 
 > **Trigger:** `@ai-orchestrator` | `@ai-orchestrator --init` | `@ai-orchestrator --quick` | `@ai-orchestrator --plan` | `@ai-orchestrator --debug` | `@ai-orchestrator --cancel <id>` | `@ai-orchestrator --cancel-all` | `@ai-orchestrator --status`
 

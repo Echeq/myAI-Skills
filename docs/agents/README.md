@@ -2,17 +2,36 @@
 
 Standalone OpenCode agents for AI-assisted development. Unlike skills (invoked via `@` triggers), agents are installed by copying the `.md` file to `~/.config/opencode/agents/` and they monitor incoming requests to route them to the appropriate pipeline.
 
+## Agent vs Skill
+
+| Layer | What | Who |
+|-------|------|-----|
+| **Agent** | Conversational, user-facing interface. Talks to you, decides what to do. | `agent/ROUTER.md`, `agent/ORCHESTRATOR.md`, `agent/DELLA.md` |
+| **Skill** | Technical engine. Called by agents via `skill("name")`. Does the heavy lifting. | `.agents/skills/<name>/SKILL.md` |
+
+Agents are **conversational** — they explain, decide, and delegate. Skills are **technical** — they contain the precise step-by-step execution logic. This separation keeps agents readable and skills maintainable.
+
 ## Overview
 
-| Agent | File | Role | Execution Model |
+| Agent | File | Role | When to Use |
 |---|---|---|---|
-| **ROUTER** | `agent/ROUTER.md` | Adaptive orchestration — routes tasks by complexity | Fixed 3-mode pipeline (planner → executor → reviewer) |
-| **ORCHESTRATOR** | `agent/ORCHESTRATOR.md` | Intelligent orchestration — dependency-aware multi-step execution | DAG engine (8-state FSM, cascade, deadlock detection) |
-| **DELLA** | `agent/DELLA.md` | Strategic planning consultant — produces adaptive plans | Read-only planning (Discover → Examine → Link → Layout → Assess) |
+| **DELLA** | `agent/DELLA.md` | Strategic planning consultant | Before starting: decides ROUTER vs ORCHESTRATOR, designs workflows |
+| **ROUTER** | `agent/ROUTER.md` | Lightweight daily task agent | Default for most work: fast, direct, pipeline-only when needed |
+| **ORCHESTRATOR** | `agent/ORCHESTRATOR.md` | Complex multi-step orchestrator | Multi-step with dependencies, cascade risk, parallel execution |
+
+## Choosing an Agent
+
+| If you need... | Use |
+|---|---|
+| A quick edit, a question answered, a single command | **ROUTER** (or just answer directly) |
+| A multi-step task that's linear (plan → build → review) | **ROUTER** with `skill("ai-router")` |
+| A complex task with dependencies (A must finish before B) | **ORCHESTRATOR** with `skill("ai-orchestrator")` |
+| Parallel work or cascade failure handling | **ORCHESTRATOR** |
+| A strategic plan before any coding starts | **DELLA** |
 
 ## Installation
 
-All agents follow the same installation pattern:
+All agents follow the same pattern:
 
 ```bash
 # Windows:
@@ -22,23 +41,25 @@ copy agent\<AGENT>.md %USERPROFILE%\.config\opencode\agents\<AGENT>.md
 cp agent/<AGENT>.md ~/.config/opencode/agents/<AGENT>.md
 ```
 
-Or place the agent file anywhere listed in your `opencode.json` `agent.paths`.
+After installation, each agent may need its corresponding skill configured:
 
-## Choosing an Agent
-
-| Use case | Agent |
-|---|---|
-| Fixed pipeline, simple multi-step tasks | **ROUTER** |
-| Complex dependency chains, cross-skill orchestration | **ORCHESTRATOR** |
-| Strategic planning, capability discovery, workflow design | **DELLA** |
-| First time setting up OpenCode agents | Either (ROUTER is simpler to understand) |
+| Agent | Configuration command | Skill |
+|---|---|---|
+| ROUTER | `@ai-router --init` | `skill("ai-router")` — 3-mode pipeline |
+| ORCHESTRATOR | `@ai-orchestrator --init` | `skill("ai-orchestrator")` — DAG engine |
+| DELLA | None (no sub-agents needed) | — |
 
 ## Relationship with Skills
 
-Agents orchestrate and plan; skills execute. A typical flow:
-
 ```
-DELLA (plan) → ROUTER or ORCHESTRATOR (execute) → skills (implement)
+User → DELLA (plan) → decides: ROUTER or ORCHESTRATOR?
+  ├── ROUTER Agent (conversational, fast)
+  │     └── Calls skill("ai-router") for pipeline
+  │     └── Or calls individual skills: skill("ai-audit"), skill("ai-docs")
+  │
+  └── ORCHESTRATOR Agent (strategic, powerful)
+        └── Calls skill("ai-orchestrator") for DAG engine
+        └── Auto-routes to skills via capability registry
 ```
 
 Each agent doc below details its specific workflow, installation, and usage.
